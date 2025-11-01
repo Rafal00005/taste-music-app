@@ -1,96 +1,115 @@
 import { songCard } from '../templates.js';
 
 export default async function SearchView(app) {
-	// Zbierz unikalne kategorie:
+	const root = document.createElement('section');
+
+	const h2 = document.createElement('h2');
+	h2.className = 'section-title';
+	h2.textContent = 'SEARCH';
+	root.appendChild(h2);
+
+	// formularz
+	const form = document.createElement('form');
+	form.className = 'search-form';
+	form.id = 'searchForm';
+
+	const labName = document.createElement('label');
+	labName.textContent = 'Name';
+	const q = document.createElement('input');
+	q.id = 'q';
+	q.type = 'text';
+	q.placeholder = 'Song title or author';
+	labName.appendChild(q);
+
+	const labCat = document.createElement('label');
+	labCat.textContent = 'Category';
+	const select = document.createElement('select');
+	select.id = 'cat';
+	const empty = document.createElement('option');
+	empty.value = '';
+	empty.textContent = '—';
+	select.appendChild(empty);
 	const categories = [
 		...new Set(app.state.songs.flatMap((s) => s.categories || [])),
 	].sort();
+	categories.forEach((c) => {
+		const opt = document.createElement('option');
+		opt.value = c;
+		opt.textContent = c;
+		select.appendChild(opt);
+	});
+	labCat.appendChild(select);
 
-	// UI
-	const root = document.createElement('section');
-	root.innerHTML = `
-    <h2 class="section-title">SEARCH</h2>
-    <form id="searchForm" class="search-form">
-      <label>
-        Name
-        <input id="q" type="text" placeholder="Song title or author" />
-      </label>
-      <label>
-        Category
-        <select id="cat">
-          <option value="">—</option>
-          ${categories
-						.map((c) => `<option value="${c}">${c}</option>`)
-						.join('')}
-        </select>
-      </label>
-      <button class="btn" type="submit">SEARCH</button>
-      <button class="btn" type="button" id="clear" style="background:#333;">CLEAR</button>
-    </form>
+	const btnSearch = document.createElement('button');
+	btnSearch.className = 'btn';
+	btnSearch.type = 'submit';
+	btnSearch.textContent = 'SEARCH';
 
-    <p id="counter" class="section-sub"></p>
-    <div id="results"></div>
-    <p id="no-results" hidden>No results match your criteria.</p>
-  `;
+	const btnClear = document.createElement('button');
+	btnClear.className = 'btn';
+	btnClear.type = 'button';
+	btnClear.style.background = '#333';
+	btnClear.textContent = 'CLEAR';
 
-	const form = root.querySelector('#searchForm');
-	const qIn = root.querySelector('#q');
-	const catIn = root.querySelector('#cat');
-	const resEl = root.querySelector('#results');
-	const count = root.querySelector('#counter');
-	const empty = root.querySelector('#no-results');
-	const clearBtn = root.querySelector('#clear');
+	form.appendChild(labName);
+	form.appendChild(labCat);
+	form.appendChild(btnSearch);
+	form.appendChild(btnClear);
+	root.appendChild(form);
 
-	// Reużywalne filtry (case-insensitive)
+	const counter = document.createElement('p');
+	counter.id = 'counter';
+	counter.className = 'section-sub';
+	root.appendChild(counter);
+
+	const results = document.createElement('div');
+	results.id = 'results';
+	root.appendChild(results);
+
+	const nores = document.createElement('p');
+	nores.id = 'no-results';
+	nores.textContent = 'No results match your criteria.';
+	nores.hidden = true;
+	root.appendChild(nores);
+
 	const matchName = (song, query) => {
 		if (!query) return true;
-		const q = query.trim().toLowerCase();
-		// autor jest ID → zamieniamy na string nazwiska przez app.formatAuthor
-		const authorName = (app.formatAuthor?.(song.author) || '').toLowerCase();
-		return song.title.toLowerCase().includes(q) || authorName.includes(q);
+		const qv = query.trim().toLowerCase();
+		const author = (app.formatAuthor?.(song.author) || '').toLowerCase();
+		return song.title.toLowerCase().includes(qv) || author.includes(qv);
 	};
-
 	const matchCat = (song, cat) => {
 		if (!cat) return true;
 		return (song.categories || []).includes(cat);
 	};
 
-	function render(list) {
-		resEl.innerHTML = '';
-		list.forEach((s) => resEl.appendChild(songCard(s)));
-		count.textContent = `We have found ${list.length} song${
-			list.length === 1 ? '' : 's'
+	function render(items) {
+		results.innerHTML = '';
+		items.forEach((s) => results.appendChild(songCard(s)));
+		counter.textContent = `We have found ${items.length} song${
+			items.length === 1 ? '' : 's'
 		}...`;
-		empty.hidden = list.length !== 0;
+		nores.hidden = items.length !== 0;
 
-		// Po wstrzyknięciu nowych <audio> trzeba zainicjalizować plugin dla tych elementów:
 		if (window.GreenAudioPlayer) {
 			GreenAudioPlayer.init({ selector: '.player', stopOthersOnPlay: true });
 		}
 	}
 
-	// 4 scenariusze – start wyszukiwania dopiero po SUBMIT
 	form.addEventListener('submit', (e) => {
 		e.preventDefault();
-		const q = qIn.value || '';
-		const cat = catIn.value || '';
-
 		const filtered = app.state.songs
-			.filter((s) => matchName(s, q)) // jeśli q puste → true
-			.filter((s) => matchCat(s, cat)); // jeśli cat pusty → true
-
+			.filter((s) => matchName(s, q.value))
+			.filter((s) => matchCat(s, select.value));
 		render(filtered);
 	});
 
-	// CLEAR – czyści formularz i pokazuje wszystkie
-	clearBtn.addEventListener('click', () => {
-		qIn.value = '';
-		catIn.value = '';
+	btnClear.addEventListener('click', () => {
+		q.value = '';
+		select.value = '';
 		render(app.state.songs);
 	});
 
-	// Widok startowy (zgodnie ze specyfikacją: pusto = wszystkie)
 	render(app.state.songs);
-
 	return root;
 }
