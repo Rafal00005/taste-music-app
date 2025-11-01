@@ -14,7 +14,7 @@ export function songCard(song) {
 	const audio = document.createElement('audio');
 	audio.className = 'player';
 	audio.setAttribute('preload', 'metadata');
-	audio.src = `/songs/${song.filename}`;
+	audio.src = `${app.filesBase}/songs/${song.filename}`; // <— ważne!
 	audio.addEventListener('play', () => app.onPlay(song));
 	audioBox.appendChild(audio);
 	wrap.appendChild(audioBox);
