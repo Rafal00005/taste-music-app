@@ -105,10 +105,10 @@
 						GreenAudioPlayer.init({
 							selector: '.player',
 							stopOthersOnPlay: true,
-							enableKeystrokes: true, // ← obsługa klawiatury
-							showTooltips: true, // ← tooltips
-							outlineControls: true, // ← accessibility
-							showDownloadButton: true, // ← przycisk download
+							enableKeystrokes: true,
+							showTooltips: true,
+							outlineControls: true,
+							showDownloadButton: true,
 						});
 					}, 200);
 				}
@@ -124,46 +124,53 @@
 			updateBtns();
 			// SUBSCRIBE SECTION
 			const subscribe = document.createElement('section');
-			subscribe.className = 'subscribe';
+			subscribe.id = 'subscribe';
+
 			const subscribeTitle = document.createElement('h2');
-			subscribeTitle.className = 'subscribe__title';
 			subscribeTitle.textContent = 'SUBSCRIBE NOW';
-
-			const subscribeContent = document.createElement('div');
-			subscribeContent.className = 'subscribe__content';
-
-			// Zdjęcie 1
-			const img1 = document.createElement('img');
-			img1.src = 'http://localhost:3131/images/subscribe.jpg';
-			img1.className = 'subscribe__img';
-
-			// Info (środek)
-			const info = document.createElement('div');
-			info.className = 'subscribe__info';
-			info.innerHTML = `
-  <img src="http://localhost:3131/images/artist.jpg" class="subscribe__img-artist" alt="Artist">
-  <h3>Dean Henson</h3>
-  <p>NEW ALBUM</p>
-  <p class="subscribe__text">Available only for subscribers</p>
-`;
-
-			// Zdjęcie 2
-			const img2 = document.createElement('img');
-			img2.src = 'http://localhost:3131/images/background.jpg';
-			img2.className = 'subscribe__img';
-
-			subscribeContent.appendChild(img1);
-			subscribeContent.appendChild(info);
-			subscribeContent.appendChild(img2);
-
-			const subscribeBtn = document.createElement('button');
-			subscribeBtn.className = 'btn btn--subscribe';
-			subscribeBtn.textContent = 'JOIN NOW';
-
 			subscribe.appendChild(subscribeTitle);
-			subscribe.appendChild(subscribeContent);
-			subscribe.appendChild(subscribeBtn);
+
+			const banner = document.createElement('div');
+			banner.className = 'banner';
+
+			// Małe zdjęcie artysty (po prawej)
+			const artist = document.createElement('img');
+			artist.src = 'http://localhost:3131/images/artist.jpg';
+			artist.className = 'artist';
+			artist.alt = 'Artist';
+			banner.appendChild(artist);
+
+			// Tekst główny (na środku - "Dean Henson")
+			const copy = document.createElement('div');
+			copy.className = 'copy';
+			copy.textContent = 'Dean Henson';
+			banner.appendChild(copy);
+
+			// Tekst dodatkowy (prawy dolny róg)
+			const copySub = document.createElement('div');
+			copySub.className = 'copy-sub';
+			copySub.innerHTML = 'NEW ALBUM<br>Available only for subscribers';
+			banner.appendChild(copySub);
+
+			// Button
+			const cta = document.createElement('button');
+			cta.className = 'cta';
+			cta.textContent = 'JOIN NOW';
+			cta.addEventListener('click', () => {
+				location.href = '#/join-now';
+			});
+			banner.appendChild(cta);
+
+			subscribe.appendChild(banner);
+
+			// "All rights reserved" POZA bannerem
+			const copyFooter = document.createElement('div');
+			copyFooter.className = 'copy-footer';
+			copyFooter.textContent = 'All rights reserved';
+			subscribe.appendChild(copyFooter);
+
 			root.appendChild(subscribe);
+
 			return root;
 		},
 

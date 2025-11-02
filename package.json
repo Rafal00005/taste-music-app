@@ -8,7 +8,7 @@
 		"web": "vite src",
 		"api": "json-server --watch app.json --port 3131 --static ./public",
 		"start": "concurrently -k -n API,WEB -c red,green \"npm:api\" \"npm:web\"",
-		"sass": "sass src/sass:src/css --watch",
+		"sass": "sass src/sass/style.scss:styles.css --watch",
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "echo \"No tests yet\" && exit 0"
