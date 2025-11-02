@@ -122,6 +122,48 @@
 			});
 			render();
 			updateBtns();
+			// SUBSCRIBE SECTION
+			const subscribe = document.createElement('section');
+			subscribe.className = 'subscribe';
+			const subscribeTitle = document.createElement('h2');
+			subscribeTitle.className = 'subscribe__title';
+			subscribeTitle.textContent = 'SUBSCRIBE NOW';
+
+			const subscribeContent = document.createElement('div');
+			subscribeContent.className = 'subscribe__content';
+
+			// Zdjęcie 1
+			const img1 = document.createElement('img');
+			img1.src = 'http://localhost:3131/images/subscribe.jpg';
+			img1.className = 'subscribe__img';
+
+			// Info (środek)
+			const info = document.createElement('div');
+			info.className = 'subscribe__info';
+			info.innerHTML = `
+  <img src="http://localhost:3131/images/artist.jpg" class="subscribe__img-artist" alt="Artist">
+  <h3>Dean Henson</h3>
+  <p>NEW ALBUM</p>
+  <p class="subscribe__text">Available only for subscribers</p>
+`;
+
+			// Zdjęcie 2
+			const img2 = document.createElement('img');
+			img2.src = 'http://localhost:3131/images/background.jpg';
+			img2.className = 'subscribe__img';
+
+			subscribeContent.appendChild(img1);
+			subscribeContent.appendChild(info);
+			subscribeContent.appendChild(img2);
+
+			const subscribeBtn = document.createElement('button');
+			subscribeBtn.className = 'btn btn--subscribe';
+			subscribeBtn.textContent = 'JOIN NOW';
+
+			subscribe.appendChild(subscribeTitle);
+			subscribe.appendChild(subscribeContent);
+			subscribe.appendChild(subscribeBtn);
+			root.appendChild(subscribe);
 			return root;
 		},
 

@@ -1,0 +1,37 @@
+@import 'settings';
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+html {
+	font-size: 16px;
+}
+
+body {
+	font-family: $font-main;
+	background-color: var(--dark-bg);
+	color: var(--text);
+	line-height: 1.6;
+	font-size: $font-size-base;
+}
+
+main {
+	padding: var(--spacing-md);
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+footer {
+	text-align: center;
+	padding: var(--spacing-lg);
+	color: var(--muted);
+	font-size: $font-size-sm;
+}
+
+// Wyłącz loading indicator
+.loading {
+	display: none !important;
+}

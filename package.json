@@ -8,6 +8,7 @@
 		"web": "vite src",
 		"api": "json-server --watch app.json --port 3131 --static ./public",
 		"start": "concurrently -k -n API,WEB -c red,green \"npm:api\" \"npm:web\"",
+		"sass": "sass src/sass:src/css --watch",
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "echo \"No tests yet\" && exit 0"
@@ -15,6 +16,7 @@
 	"devDependencies": {
 		"concurrently": "^9.2.1",
 		"json-server": "0.17.4",
+		"sass": "^1.93.3",
 		"vite": "^6.4.1"
 	}
 }
