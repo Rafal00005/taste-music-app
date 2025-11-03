@@ -43,28 +43,71 @@ nav,
 	height: 420px;
 	background: var(--hero) center 28% / cover no-repeat;
 	position: relative;
+	max-width: var(--max); /* 👈 DODAJ - ogranicza szerokość */
+	margin: 0 auto; /* 👈 DODAJ - centruje */
+	border-radius: 12px; /* 👈 DODAJ - zaokrąglone rogi (opcjonalnie) */
+}
+/* Gradient overlay - płynne ciemnienie */
+.hero::after {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(
+		to bottom,
+		rgba(0, 0, 0, 0) 29%,
+		rgba(0, 0, 0, 0.05) 33%,
+		rgba(0, 0, 0, 0.1) 35%,
+		rgba(0, 0, 0, 0.2) 40%,
+		rgba(0, 0, 0, 0.35) 50%,
+		rgba(0, 0, 0, 0.5) 60%,
+		rgba(0, 0, 0, 0.65) 80%,
+		rgba(0, 0, 0, 0.78) 85%,
+		rgba(0, 0, 0, 0.9) 100%
+	);
+	pointer-events: none;
+	border-radius: 12px;
 }
 .hero__overlay {
+	position: relative; /*dodane*/
 	max-width: var(--max);
 	margin: 0 auto;
 	padding: 32px var(--pad) 0;
+	text-align: center; /* 👈 DODAJ - centruje wszystko w środku */
+	height: 100%; /* 👈 DODAJ */
+	display: flex; /* 👈 DODAJ */
+	flex-direction: column; /* 👈 DODAJ */
 }
 .logo {
-	font-size: 48px;
-	font-weight: 900;
-	letter-spacing: 0.35em;
+	font-size: 49px; /* 👈 BYŁO: 48px - zwiększam */
+	font-weight: 800;
+	letter-spacing: 0.59em;
+	margin: 0; /* 👈 DODAJ */
+	color: #ffffff;
+	padding-top: 80px;
 }
 .logo__tag {
-	letter-spacing: 0.6em;
+	letter-spacing: 0.4em; /* 👈 BYŁO: 0.6em - większy rozstaw */
 	margin: 12px 0 24px;
+	font-size: 12px;
+	line-height: 1.4;
+	font-weight: 700; /* 👈 BYŁO: normal - teraz grubszy */
+	color: #ffffff;
 }
 .nav {
 	display: flex;
 	gap: 28px;
+	justify-content: center; /* 👈 ZMIEŃ z flex-start na center */
+	margin-top: auto; /* 👈 DODAJ - pcha nav na dół */
+	padding-bottom: 20px; /* 👈 DODAJ - odstęp od dołu */
 }
 .nav a {
 	color: var(--text);
 	opacity: 0.7;
+	font-size: 14px; /* 👈 DODAJ */
+	font-weight: 500; /* 👈 DODAJ */
 }
 .nav a.active,
 .nav a:hover {
@@ -125,17 +168,25 @@ nav,
 .player .controls svg path {
 	fill: var(--accent) !important;
 }
-
 /* ====== SUBSCRIBE ====== */
 #subscribe {
 	max-width: var(--max);
 	margin: 32px auto 48px;
 	padding: 0 var(--pad);
 }
-#subscribe h2 {
-	letter-spacing: 0.35em;
+
+#subscribe .title {
+	position: absolute;
+	top: -3%;
+	left: 50%;
+	transform: translateX(-50%);
+	font-size: clamp(20px, 3.6vw, 28px);
+	font-weight: 900;
+	letter-spacing: 0.25em;
+	color: #fff;
 	text-align: center;
-	margin: 0 0 16px;
+	z-index: 10;
+	white-space: nowrap;
 }
 
 #subscribe .banner {
@@ -149,57 +200,75 @@ nav,
 
 #subscribe .artist {
 	position: absolute;
-	right: 60px;
-	top: 50%;
+	right: 16%;
+	top: 44%;
 	transform: translateY(-50%);
-	width: 200px;
-	height: 200px;
+	width: 22%;
+	height: 57%;
 	object-fit: cover;
 	border-radius: 8px;
 	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
-#subscribe .copy {
+#subscribe .copy-main {
 	position: absolute;
-	left: 50%;
+	left: 58%;
 	top: 50%;
 	transform: translate(-50%, -50%);
 	text-align: center;
 	color: #fff;
-	font-size: 42px;
+	font-size: clamp(28px, 4.6vw, 35px);
 	letter-spacing: 0.1em;
 	line-height: 1.2;
 	font-weight: 700;
 	text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-	white-space: nowrap;
+	white-space: normal;
+	max-width: 26%;
+	word-spacing: 999px;
+}
+
+#subscribe .copy-main .red {
+	color: var(--accent);
 }
 
 #subscribe .copy-sub {
 	position: absolute;
-	right: 60px;
-	bottom: 60px;
+	right: 13%;
+	bottom: 17%;
 	text-align: right;
-	color: #fff;
-	font-size: 14px;
+	color: #ddcccc;
+	font-size: 1.4vw;
 	letter-spacing: 0.25em;
-	line-height: 1.6;
-	font-weight: 600;
-	text-transform: uppercase;
+	line-height: 1.4;
+	font-weight: 200;
+}
+
+#subscribe .copy-sub-title {
+	font-size: clamp(12px, 1.8vw, 14px);
+	letter-spacing: 0.3em;
+	font-weight: 700;
+	margin-bottom: 4px;
+}
+
+#subscribe .copy-sub-text {
+	font-size: clamp(10px, 1.4vw, 11px);
+	letter-spacing: 0.2em;
+	font-weight: 300;
 }
 
 #subscribe .cta {
 	position: absolute;
-	left: 40px;
-	bottom: 40px;
+	left: 12%;
+	bottom: 33%;
 	background: var(--accent);
 	color: #fff;
 	border: 0;
-	padding: 14px 32px;
+	padding: 1.8% 4.2%;
 	border-radius: 4px;
 	font-weight: 800;
 	letter-spacing: 0.15em;
 	cursor: pointer;
-	font-size: 14px;
+	font-size: clamp(12px, 1.8vw, 14px);
 }
 
 #subscribe .copy-footer {
@@ -211,33 +280,212 @@ nav,
 }
 
 /* ====== FOOTER ====== */
-.footer {
-	color: #8a8a8a;
-	font-size: 12px;
-	text-align: center;
-	padding: 28px var(--pad) 60px;
-}
 
 /* ====== RESPONSIVE ====== */
+
+/* Tablet i mniejsze laptopy */
+@media (max-width: 1024px) {
+	.hero {
+		height: 380px;
+	}
+}
+
+/* Tablet portrait */
 @media (max-width: 860px) {
 	.hero {
 		height: 340px;
 	}
-	#subscribe .banner {
-		grid-template-columns: 1fr;
-		min-height: 420px;
+
+	#subscribe .title {
+		font-size: 22px;
+		letter-spacing: 0.22em;
+		top: -10px;
 	}
+
 	#subscribe .artist {
-		width: 220px;
-		justify-self: center;
+		width: 140px;
+		height: 170px;
+		right: 60px;
 	}
-	#subscribe .copy {
-		position: static;
-		text-align: center;
-		margin-top: 12px;
+
+	#subscribe .copy-main {
+		font-size: 32px;
+		left: 52%;
 	}
+}
+
+/* Mobile landscape / małe tablety */
+@media (max-width: 768px) {
+	#subscribe .banner {
+		min-height: 280px;
+	}
+
+	#subscribe .title {
+		font-size: 18px;
+		letter-spacing: 0.2em;
+		top: -8px;
+	}
+
+	#subscribe .artist {
+		width: 100px;
+		height: 120px;
+		right: 30px;
+		top: 50%;
+	}
+
+	#subscribe .copy-main {
+		font-size: 24px;
+		left: 45%;
+		top: 48%;
+		max-width: 140px;
+	}
+
+	#subscribe .copy-sub {
+		right: 30px;
+		bottom: 50px;
+		font-size: 8px;
+		letter-spacing: 0.15em;
+	}
+
+	#subscribe .copy-sub-title {
+		font-size: 10px;
+	}
+
+	#subscribe .copy-sub-text {
+		font-size: 7px;
+	}
+
 	#subscribe .cta {
-		left: 50%;
-		transform: translateX(-50%);
+		left: 30px;
+		bottom: 60px;
+		padding: 8px 16px;
+		font-size: 10px;
+		letter-spacing: 0.1em;
+	}
+}
+
+/* Mobile portrait - większe telefony (iPhone 12 Pro Max, Samsung S21+) */
+@media (max-width: 480px) {
+	#subscribe .banner {
+		min-height: 260px;
+	}
+
+	#subscribe .title {
+		font-size: 16px;
+		letter-spacing: 0.18em;
+		top: -8px;
+	}
+
+	#subscribe .artist {
+		width: 85px;
+		height: 100px;
+		right: 20px;
+	}
+
+	#subscribe .copy-main {
+		font-size: 22px;
+		left: 43%;
+		max-width: 130px;
+	}
+
+	#subscribe .copy-sub {
+		right: 20px;
+		bottom: 45px;
+		font-size: 7px;
+	}
+
+	#subscribe .copy-sub-title {
+		font-size: 9px;
+	}
+
+	#subscribe .cta {
+		left: 20px;
+		bottom: 55px;
+		padding: 7px 14px;
+		font-size: 9px;
+	}
+}
+
+/* Mobile portrait - standardowe telefony (iPhone 12, Samsung S21) */
+@media (max-width: 400px) {
+	#subscribe .banner {
+		min-height: 240px;
+	}
+
+	#subscribe .title {
+		font-size: 14px;
+		letter-spacing: 0.15em;
+		top: -6px;
+	}
+
+	#subscribe .artist {
+		width: 75px;
+		height: 90px;
+		right: 15px;
+	}
+
+	#subscribe .copy-main {
+		font-size: 20px;
+		left: 42%;
+		max-width: 115px;
+	}
+
+	#subscribe .copy-sub {
+		right: 15px;
+		bottom: 40px;
+		font-size: 6px;
+	}
+
+	#subscribe .copy-sub-title {
+		font-size: 8px;
+	}
+
+	#subscribe .cta {
+		left: 15px;
+		bottom: 50px;
+		padding: 6px 12px;
+		font-size: 8px;
+	}
+}
+
+/* Mobile portrait - małe telefony (iPhone SE, małe Androidy) */
+@media (max-width: 360px) {
+	#subscribe .banner {
+		min-height: 220px;
+	}
+
+	#subscribe .title {
+		font-size: 12px;
+		letter-spacing: 0.12em;
+		top: -5px;
+	}
+
+	#subscribe .artist {
+		width: 65px;
+		height: 78px;
+		right: 12px;
+	}
+
+	#subscribe .copy-main {
+		font-size: 18px;
+		left: 40%;
+		max-width: 100px;
+	}
+
+	#subscribe .copy-sub {
+		right: 12px;
+		bottom: 35px;
+		font-size: 5px;
+	}
+
+	#subscribe .copy-sub-title {
+		font-size: 7px;
+	}
+
+	#subscribe .cta {
+		left: 12px;
+		bottom: 45px;
+		padding: 5px 10px;
+		font-size: 7px;
 	}
 }

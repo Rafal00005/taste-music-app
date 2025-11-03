@@ -23,9 +23,8 @@
 			}`;
 			wrap.appendChild(title);
 
-			// STRUKTURA: DIV.player zawiera AUDIO!
 			const audioBox = document.createElement('div');
-			audioBox.className = 'player'; // KLASA NA DIV-IE!
+			audioBox.className = 'player';
 
 			const audio = document.createElement('audio');
 			audio.preload = 'metadata';
@@ -46,113 +45,71 @@
 			wrap.appendChild(meta);
 			return wrap;
 		},
+		
+		initPlayers(root = document) {
+			if (!window.GreenAudioPlayer) return;
+			const nodes = root.querySelectorAll('.player:not([data-gap-init])');
+			if (!nodes.length) return;
+			nodes.forEach((n) => n.setAttribute('data-gap-init', '1'));
+			GreenAudioPlayer.init({
+				selector: '.player[data-gap-init="1"]',
+				stopOthersOnPlay: true,
+				enableKeystrokes: true,
+				showTooltips: true,
+				outlineControls: true,
+				showDownloadButton: true,
+			});
+		},
 
 		viewHome() {
 			const root = document.createElement('section');
 
-			const h2 = document.createElement('h2');
-			h2.className = 'section-title';
-			h2.textContent = 'HOME';
-			root.appendChild(h2);
-
-			const sub = document.createElement('p');
-			sub.className = 'section-sub';
-			sub.textContent = 'Latest tracks';
-			root.appendChild(sub);
-
-			const ul = document.createElement('ul');
-			ul.className = 'cats';
-			ul.id = 'cats';
-			ul.setAttribute('role', 'tablist');
-			const categories = [
-				...new Set(this.state.songs.flatMap((s) => s.categories || [])),
-			].sort();
-			categories.forEach((c) => {
-				const li = document.createElement('li');
-				const btn = document.createElement('button');
-				btn.className = 'cat-btn';
-				btn.type = 'button';
-				btn.dataset.cat = c;
-				btn.setAttribute('aria-pressed', 'false');
-				btn.textContent = c;
-				li.appendChild(btn);
-				ul.appendChild(li);
-			});
-			root.appendChild(ul);
-
+			// Lista wszystkich piosenek OD RAZU
 			const list = document.createElement('div');
 			list.id = 'songs';
+			this.state.songs.forEach((s) => list.appendChild(this.songCard(s)));
 			root.appendChild(list);
 
-			let activeCat = null;
-			const updateBtns = () => {
-				root.querySelectorAll('.cat-btn').forEach((b) => {
-					const on = b.dataset.cat === activeCat;
-					b.classList.toggle('is-active', on);
-					b.setAttribute('aria-pressed', String(on));
-				});
-			};
-			const render = () => {
-				const src = activeCat
-					? this.state.songs.filter((s) =>
-							(s.categories || []).includes(activeCat)
-					  )
-					: this.state.songs;
-				list.innerHTML = '';
-				src.forEach((s) => list.appendChild(this.songCard(s)));
-				if (window.GreenAudioPlayer) {
-					setTimeout(() => {
-						GreenAudioPlayer.init({
-							selector: '.player',
-							stopOthersOnPlay: true,
-							enableKeystrokes: true,
-							showTooltips: true,
-							outlineControls: true,
-							showDownloadButton: true,
-						});
-					}, 200);
-				}
-			};
-			ul.addEventListener('click', (e) => {
-				const b = e.target.closest('.cat-btn');
-				if (!b) return;
-				activeCat = activeCat === b.dataset.cat ? null : b.dataset.cat;
-				updateBtns();
-				render();
-			});
-			render();
-			updateBtns();
+			this.initPlayers(root);
+
 			// SUBSCRIBE SECTION
 			const subscribe = document.createElement('section');
 			subscribe.id = 'subscribe';
 
-			const subscribeTitle = document.createElement('h2');
-			subscribeTitle.textContent = 'SUBSCRIBE NOW';
-			subscribe.appendChild(subscribeTitle);
-
 			const banner = document.createElement('div');
 			banner.className = 'banner';
 
-			// Małe zdjęcie artysty (po prawej)
+			const subscribeTitle = document.createElement('h2');
+			subscribeTitle.className = 'title';
+			subscribeTitle.textContent = 'SUBSCRIBE NOW';
+			banner.appendChild(subscribeTitle);
+
 			const artist = document.createElement('img');
 			artist.src = 'http://localhost:3131/images/artist.jpg';
 			artist.className = 'artist';
 			artist.alt = 'Artist';
 			banner.appendChild(artist);
 
-			// Tekst główny (na środku - "Dean Henson")
 			const copy = document.createElement('div');
-			copy.className = 'copy';
-			copy.textContent = 'Dean Henson';
+			copy.className = 'copy-main';
+			copy.innerHTML = 'Dean<br>Hen<span class="red">son</span>';
 			banner.appendChild(copy);
 
-			// Tekst dodatkowy (prawy dolny róg)
 			const copySub = document.createElement('div');
 			copySub.className = 'copy-sub';
-			copySub.innerHTML = 'NEW ALBUM<br>Available only for subscribers';
+
+			const copySubTitle = document.createElement('div');
+			copySubTitle.className = 'copy-sub-title';
+			copySubTitle.textContent = 'NEW ALBUM';
+
+			const copySubText = document.createElement('div');
+			copySubText.className = 'copy-sub-text';
+			copySubText.textContent = 'Available only for subscribers';
+
+			copySub.appendChild(copySubTitle);
+			copySub.appendChild(copySubText);
 			banner.appendChild(copySub);
 
-			// Button
 			const cta = document.createElement('button');
 			cta.className = 'cta';
 			cta.textContent = 'JOIN NOW';
@@ -163,7 +120,6 @@
 
 			subscribe.appendChild(banner);
 
-			// "All rights reserved" POZA bannerem
 			const copyFooter = document.createElement('div');
 			copyFooter.className = 'copy-footer';
 			copyFooter.textContent = 'All rights reserved';
@@ -176,14 +132,11 @@
 
 		viewSearch() {
 			const root = document.createElement('section');
-			const h2 = document.createElement('h2');
-			h2.className = 'section-title';
-			h2.textContent = 'SEARCH';
-			root.appendChild(h2);
 
 			const form = document.createElement('form');
 			form.className = 'search-form';
 			form.id = 'searchForm';
+
 			const labName = document.createElement('label');
 			labName.textContent = 'Name';
 			const q = document.createElement('input');
@@ -191,6 +144,7 @@
 			q.type = 'text';
 			q.placeholder = 'Song title or author';
 			labName.appendChild(q);
+
 			const labCat = document.createElement('label');
 			labCat.textContent = 'Category';
 			const select = document.createElement('select');
@@ -199,6 +153,7 @@
 			opt0.value = '';
 			opt0.textContent = '—';
 			select.appendChild(opt0);
+
 			const categories = [
 				...new Set(this.state.songs.flatMap((s) => s.categories || [])),
 			].sort();
@@ -209,15 +164,18 @@
 				select.appendChild(o);
 			});
 			labCat.appendChild(select);
+
 			const btnS = document.createElement('button');
 			btnS.className = 'btn';
 			btnS.type = 'submit';
 			btnS.textContent = 'SEARCH';
+
 			const btnC = document.createElement('button');
 			btnC.className = 'btn';
 			btnC.type = 'button';
 			btnC.style.background = '#333';
 			btnC.textContent = 'CLEAR';
+
 			form.appendChild(labName);
 			form.appendChild(labCat);
 			form.appendChild(btnS);
@@ -228,9 +186,11 @@
 			counter.className = 'section-sub';
 			counter.id = 'counter';
 			root.appendChild(counter);
+
 			const results = document.createElement('div');
 			results.id = 'results';
 			root.appendChild(results);
+
 			const nores = document.createElement('p');
 			nores.id = 'no-results';
 			nores.textContent = 'No results match your criteria.';
@@ -243,6 +203,7 @@
 				const author = (this.formatAuthor(song.author) || '').toLowerCase();
 				return song.title.toLowerCase().includes(qv) || author.includes(qv);
 			};
+			
 			const matchCat = (song, cat) => {
 				if (!cat) return true;
 				return (song.categories || []).includes(cat);
@@ -251,18 +212,13 @@
 			const render = (items) => {
 				results.innerHTML = '';
 				items.forEach((s) => results.appendChild(this.songCard(s)));
+
 				counter.textContent = `We have found ${items.length} song${
 					items.length === 1 ? '' : 's'
 				}...`;
 				nores.hidden = items.length !== 0;
-				if (window.GreenAudioPlayer) {
-					setTimeout(() => {
-						GreenAudioPlayer.init({
-							selector: '.player',
-							stopOthersOnPlay: true,
-						});
-					}, 200);
-				}
+
+				this.initPlayers(root);
 			};
 
 			form.addEventListener('submit', (e) => {
@@ -272,6 +228,7 @@
 					.filter((s) => matchCat(s, select.value));
 				render(list);
 			});
+
 			btnC.addEventListener('click', () => {
 				q.value = '';
 				select.value = '';
@@ -279,20 +236,19 @@
 			});
 
 			render(this.state.songs);
+
 			return root;
 		},
 
 		viewDiscover() {
 			const root = document.createElement('section');
-			const h2 = document.createElement('h2');
-			h2.className = 'section-title';
-			h2.textContent = 'DISCOVER';
-			root.appendChild(h2);
+
 			const desc = document.createElement('p');
 			desc.className = 'section-sub';
 			desc.id = 'desc';
 			desc.textContent = 'Give it a try!';
 			root.appendChild(desc);
+
 			const bar = document.createElement('div');
 			bar.style.cssText =
 				'display:flex;gap:8px;justify-content:center;margin:8px 0 20px;';
@@ -303,6 +259,7 @@
 			reset.textContent = 'Reset Discover';
 			bar.appendChild(reset);
 			root.appendChild(bar);
+
 			const slot = document.createElement('div');
 			slot.id = 'slot';
 			root.appendChild(slot);
@@ -330,6 +287,7 @@
 
 			const chosen = pool[Math.floor(Math.random() * pool.length)];
 			slot.appendChild(this.songCard(chosen));
+			
 			if (window.GreenAudioPlayer) {
 				setTimeout(() => {
 					GreenAudioPlayer.init({
@@ -338,6 +296,7 @@
 					});
 				}, 200);
 			}
+
 			reset.addEventListener('click', () => {
 				this.state.playStats = { categoryCounts: {} };
 				localStorage.setItem('playStats', JSON.stringify(this.state.playStats));
@@ -385,9 +344,11 @@
 			const res = await fetch(`${API_BASE}/songs`);
 			this.state.songs = await res.json();
 		},
+
 		formatAuthor(id) {
 			return this.state.authors[id] || `Author #${id}`;
 		},
+
 		onPlay(song) {
 			const stats = this.state.playStats;
 			if (!stats.categoryCounts) stats.categoryCounts = {};
