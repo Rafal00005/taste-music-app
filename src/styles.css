@@ -79,6 +79,7 @@ nav,
 	height: 100%; /* 👈 DODAJ */
 	display: flex; /* 👈 DODAJ */
 	flex-direction: column; /* 👈 DODAJ */
+	z-index: 1;
 }
 .logo {
 	font-size: 49px; /* 👈 BYŁO: 48px - zwiększam */
@@ -99,26 +100,39 @@ nav,
 .nav {
 	display: flex;
 	gap: 28px;
-	justify-content: center; /* 👈 ZMIEŃ z flex-start na center */
-	margin-top: auto; /* 👈 DODAJ - pcha nav na dół */
-	padding-bottom: 20px; /* 👈 DODAJ - odstęp od dołu */
+	justify-content: center;
+	max-width: var(--max);
+	margin: 0 auto; /* 👈 BYŁO: margin-top: 0 auto; - POPRAWKA! */
+	padding: 24px 0;
 }
+
 .nav a {
-	color: var(--text);
+	color: #ffffff; /* 👈 BYŁO: var(--text) - teraz czysty biały */
 	opacity: 0.7;
-	font-size: 14px; /* 👈 DODAJ */
-	font-weight: 500; /* 👈 DODAJ */
+	font-size: 14px;
+	font-weight: 600; /* 👈 BYŁO: 500 - teraz grubszy */
 }
+
 .nav a.active,
 .nav a:hover {
 	opacity: 1;
 }
 
-/* ====== SONG LIST / PLAYER ====== */
+/* ====== SECTION TITLE ====== */
+
 .section-title {
 	margin: 24px 0 4px;
 	letter-spacing: 0.35em;
+	text-align: center; /* 👈 Wycentrowany tytuł */
 }
+
+.section-sub {
+	margin: 0 0 14px;
+	color: var(--muted);
+	text-align: center; /* 👈 Wycentrowany podtytuł */
+}
+/* ====== SONG LIST / PLAYER ====== */
+
 .section-sub {
 	margin: 0 0 14px;
 	color: var(--muted);
@@ -146,16 +160,62 @@ nav,
 }
 
 .song {
-	margin: 18px 0;
+	margin: 18px auto; /* 👈 BYŁO: margin: 18px 0; - TERAZ: auto wycentrowuje */
+	max-width: 520px; /* 👈 DODAJ - ogranicza szerokość */
+	text-align: center; /* 👈 DODAJ */
 }
 .player {
 	width: 360px;
-} /* kontrolka audio mniejsza */
+	height: 40px;
+	margin: 0 auto; /* 👈 DODAJ - centruje player */
+}
+/* kontrolka audio mniejsza */
 .song__meta {
 	font-size: 12px;
 	color: #bdbdbd;
 	display: flex;
 	gap: 16px;
+	justify-content: center; /* 👈 DODAJ - centruje meta */
+}
+/* ====== SEARCH FORM ====== */
+.search-form {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	justify-content: center;
+	margin: 20px 0;
+}
+
+.search-form label {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.search-form input {
+	padding: 8px 12px;
+	border: 1px solid #444;
+	border-radius: 4px;
+	background: #fff;
+	color: #000;
+	font-size: 14px;
+	width: 200px;
+}
+
+.search-form .btn {
+	background: var(--accent);
+	color: #fff;
+	border: 0;
+	padding: 9px 24px;
+	border-radius: 4px;
+	font-weight: 700;
+	cursor: pointer;
+	font-size: 13px;
+	letter-spacing: 0.1em;
+}
+
+.search-form .btn:hover {
+	background: #d32f2f;
 }
 
 /* GreenAudioPlayer – czerwone akcenty */
@@ -271,15 +331,20 @@ nav,
 	font-size: clamp(12px, 1.8vw, 14px);
 }
 
-#subscribe .copy-footer {
-	text-align: center;
-	color: #8a8a8a;
-	font-size: 11px;
-	margin-top: 20px;
-	letter-spacing: 0.15em;
+/* ====== SECTION LAYOUT ====== */
+#view section {
+	text-align: center; /* 👈 Centruje wszystko w sekcji */
 }
 
 /* ====== FOOTER ====== */
+.footer {
+	text-align: center;
+	color: #8a8a8a;
+	font-size: 11px;
+	margin-top: 40px;
+	padding: 20px 0;
+	letter-spacing: 0.15em;
+}
 
 /* ====== RESPONSIVE ====== */
 

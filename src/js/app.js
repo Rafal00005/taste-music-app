@@ -45,7 +45,7 @@
 			wrap.appendChild(meta);
 			return wrap;
 		},
-		
+
 		initPlayers(root = document) {
 			if (!window.GreenAudioPlayer) return;
 			const nodes = root.querySelectorAll('.player:not([data-gap-init])');
@@ -120,18 +120,19 @@
 
 			subscribe.appendChild(banner);
 
-			const copyFooter = document.createElement('div');
-			copyFooter.className = 'copy-footer';
-			copyFooter.textContent = 'All rights reserved';
-			subscribe.appendChild(copyFooter);
-
+			
 			root.appendChild(subscribe);
 
 			return root;
 		},
-
 		viewSearch() {
 			const root = document.createElement('section');
+
+			// DODAJ TYTUŁ "SEARCH"
+			const title = document.createElement('h2');
+			title.className = 'section-title';
+			title.textContent = 'SEARCH';
+			root.appendChild(title);
 
 			const form = document.createElement('form');
 			form.className = 'search-form';
@@ -145,41 +146,13 @@
 			q.placeholder = 'Song title or author';
 			labName.appendChild(q);
 
-			const labCat = document.createElement('label');
-			labCat.textContent = 'Category';
-			const select = document.createElement('select');
-			select.id = 'cat';
-			const opt0 = document.createElement('option');
-			opt0.value = '';
-			opt0.textContent = '—';
-			select.appendChild(opt0);
-
-			const categories = [
-				...new Set(this.state.songs.flatMap((s) => s.categories || [])),
-			].sort();
-			categories.forEach((c) => {
-				const o = document.createElement('option');
-				o.value = c;
-				o.textContent = c;
-				select.appendChild(o);
-			});
-			labCat.appendChild(select);
-
 			const btnS = document.createElement('button');
 			btnS.className = 'btn';
 			btnS.type = 'submit';
 			btnS.textContent = 'SEARCH';
 
-			const btnC = document.createElement('button');
-			btnC.className = 'btn';
-			btnC.type = 'button';
-			btnC.style.background = '#333';
-			btnC.textContent = 'CLEAR';
-
 			form.appendChild(labName);
-			form.appendChild(labCat);
 			form.appendChild(btnS);
-			form.appendChild(btnC);
 			root.appendChild(form);
 
 			const counter = document.createElement('p');
@@ -203,11 +176,6 @@
 				const author = (this.formatAuthor(song.author) || '').toLowerCase();
 				return song.title.toLowerCase().includes(qv) || author.includes(qv);
 			};
-			
-			const matchCat = (song, cat) => {
-				if (!cat) return true;
-				return (song.categories || []).includes(cat);
-			};
 
 			const render = (items) => {
 				results.innerHTML = '';
@@ -223,16 +191,8 @@
 
 			form.addEventListener('submit', (e) => {
 				e.preventDefault();
-				const list = this.state.songs
-					.filter((s) => matchName(s, q.value))
-					.filter((s) => matchCat(s, select.value));
+				const list = this.state.songs.filter((s) => matchName(s, q.value));
 				render(list);
-			});
-
-			btnC.addEventListener('click', () => {
-				q.value = '';
-				select.value = '';
-				render(this.state.songs);
 			});
 
 			render(this.state.songs);
@@ -246,65 +206,22 @@
 			const desc = document.createElement('p');
 			desc.className = 'section-sub';
 			desc.id = 'desc';
-			desc.textContent = 'Give it a try!';
+			desc.textContent = 'Give it a try!'; // 👈 ZAWSZE ten sam tekst
 			root.appendChild(desc);
 
-			const bar = document.createElement('div');
-			bar.style.cssText =
-				'display:flex;gap:8px;justify-content:center;margin:8px 0 20px;';
-			const reset = document.createElement('button');
-			reset.id = 'reset';
-			reset.className = 'btn';
-			reset.style.background = '#333';
-			reset.textContent = 'Reset Discover';
-			bar.appendChild(reset);
-			root.appendChild(bar);
+			// USUŃ cały button "Reset Discover"
 
 			const slot = document.createElement('div');
 			slot.id = 'slot';
 			root.appendChild(slot);
 
-			const entries = Object.entries(
-				(this.state.playStats && this.state.playStats.categoryCounts) || {}
-			);
-			let pool = this.state.songs;
-			if (entries.length) {
-				const max = Math.max(...entries.map(([, v]) => v));
-				const tops = entries.filter(([, v]) => v === max).map(([k]) => k);
-				const top = tops[Math.floor(Math.random() * tops.length)];
-				const filtered = this.state.songs.filter((s) =>
-					(s.categories || []).includes(top)
-				);
-				if (filtered.length) {
-					pool = filtered;
-					desc.textContent = `Based on your listening history — category: ${top}`;
-				} else {
-					desc.textContent = `No listening history yet — showing a random track`;
-				}
-			} else {
-				desc.textContent = `No listening history yet — showing a random track`;
-			}
-
-			const chosen = pool[Math.floor(Math.random() * pool.length)];
+			// USUŃ całą logikę z playStats/categoryCounts
+			// Po prostu losowa piosenka ZAWSZE
+			const chosen =
+				this.state.songs[Math.floor(Math.random() * this.state.songs.length)];
 			slot.appendChild(this.songCard(chosen));
-			
-			if (window.GreenAudioPlayer) {
-				setTimeout(() => {
-					GreenAudioPlayer.init({
-						selector: '.player',
-						stopOthersOnPlay: true,
-					});
-				}, 200);
-			}
 
-			reset.addEventListener('click', () => {
-				this.state.playStats = { categoryCounts: {} };
-				localStorage.setItem('playStats', JSON.stringify(this.state.playStats));
-				const hash = location.hash || '#/discover';
-				location.hash = '';
-				location.hash = hash;
-			});
-
+			this.initPlayers(root);
 			return root;
 		},
 
