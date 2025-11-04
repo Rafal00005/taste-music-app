@@ -20,6 +20,7 @@ body {
 	font: 16px/1.5 system-ui, Arial, sans-serif;
 	background: var(--bg);
 	color: var(--text);
+    
 }
 
 a {
@@ -58,14 +59,14 @@ nav,
 	background: linear-gradient(
 		to bottom,
 		rgba(0, 0, 0, 0) 29%,
-		rgba(0, 0, 0, 0.05) 33%,
-		rgba(0, 0, 0, 0.1) 35%,
-		rgba(0, 0, 0, 0.2) 40%,
-		rgba(0, 0, 0, 0.35) 50%,
+		rgba(0, 0, 0, 0.05) 30%,
+		rgba(0, 0, 0, 0.33)40%,
+		rgba(0, 0, 0, 0.2) 30%,
+		rgba(0, 0, 0, 0.35) 30%,
 		rgba(0, 0, 0, 0.5) 60%,
-		rgba(0, 0, 0, 0.65) 80%,
+		rgba(0, 0, 0, 0.65) 70%,
 		rgba(0, 0, 0, 0.78) 85%,
-		rgba(0, 0, 0, 0.9) 100%
+		rgba(0, 0, 0, 0.95) 100%
 	);
 	pointer-events: none;
 	border-radius: 12px;
@@ -99,18 +100,18 @@ nav,
 }
 .nav {
 	display: flex;
-	gap: 28px;
+	gap: 75px;
 	justify-content: center;
 	max-width: var(--max);
 	margin: 0 auto; /* 👈 BYŁO: margin-top: 0 auto; - POPRAWKA! */
-	padding: 24px 0;
+	padding: 10px 0;
 }
 
 .nav a {
 	color: #ffffff; /* 👈 BYŁO: var(--text) - teraz czysty biały */
 	opacity: 0.7;
-	font-size: 14px;
-	font-weight: 600; /* 👈 BYŁO: 500 - teraz grubszy */
+	font-size: 15px;
+	font-weight: 700; /* 👈 BYŁO: 500 - teraz grubszy */
 }
 
 .nav a.active,
@@ -166,8 +167,9 @@ nav,
 }
 .player {
 	width: 360px;
-	height: 40px;
+	height: 38px;
 	margin: 0 auto; /* 👈 DODAJ - centruje player */
+    
 }
 /* kontrolka audio mniejsza */
 .song__meta {
@@ -218,16 +220,8 @@ nav,
 	background: #d32f2f;
 }
 
-/* GreenAudioPlayer – czerwone akcenty */
-.player .gap-progress .gap-progress__value {
-	background: var(--accent) !important;
-}
-.player .gap-progress .gap-progress__pin {
-	background: var(--accent) !important;
-}
-.player .controls svg path {
-	fill: var(--accent) !important;
-}
+
+
 /* ====== SUBSCRIBE ====== */
 #subscribe {
 	max-width: var(--max);
@@ -553,4 +547,51 @@ nav,
 		padding: 5px 10px;
 		font-size: 7px;
 	}
+}
+
+/* ====== AUDIO PLAYER - CZERWONA KROPKA ====== */
+/* NADPISANIE KOLORU ZIELONEJ KROPKI NA CZERWONĄ */
+
+/* Dokładne nadpisanie stylów z paczki green-audio-player */
+/* Według screenshota z DevTools, kropka ma klasę .progress__pin */
+.green-audio-player .controls__slider .controls__progress .pin,
+.green-audio-player .slider .gap-progress .pin,
+.controls__progress .pin,
+.gap-progress .pin,
+.progress__pin {
+	background-color: #e53935 !important;
+}
+
+/* Dodatkowe selektory dla pewności */
+.green-audio-player .controls .controls__slider .controls__progress .progress__pin {
+	background-color: #e53935 !important;
+}
+
+.green-audio-player .slider .progress__pin {
+	background-color: #e53935 !important;
+}
+
+/* Wszystkie możliwe kombinacje z DevTools */
+.controls__progress.gap-progress .pin.progress__pin {
+	background-color: #e53935 !important;
+}
+
+div.controls__progress.gap-progress div.pin.progress__pin {
+	background-color: #e53935 !important;
+}
+
+/* NADPISANIE KOLORU ZIELONEGO PASKA POSTĘPU NA CZERWONY */
+.green-audio-player .controls__progress,
+.green-audio-player .gap-progress,
+.controls__progress,
+.gap-progress {
+	background-color: #e53935 !important;
+	background: #e53935 !important;
+}
+
+/* Wypełnienie paska postępu */
+.green-audio-player .controls__progress::before,
+.gap-progress::before {
+	background-color: #e53935 !important;
+	background: #e53935 !important;
 }

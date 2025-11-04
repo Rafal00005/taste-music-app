@@ -3,15 +3,23 @@
 	const FILES_BASE = 'http://localhost:3131';
 	const AUTHORS = { 1: 'David Renda', 2: 'David Fesliyan', 3: 'Steve Oxen' };
 
-	const app = {
-		filesBase: FILES_BASE,
-		state: {
-			songs: [],
-			authors: AUTHORS,
-			playStats: JSON.parse(
-				localStorage.getItem('playStats') || '{"categoryCounts":{}}'
-			),
-		},
+	class App {
+		constructor() {
+			this.filesBase = FILES_BASE;
+			this.state = {
+				songs: [],
+				authors: AUTHORS,
+				playStats: JSON.parse(
+					localStorage.getItem('playStats') || '{"categoryCounts":{}}'
+				),
+			};
+			this.routes = {
+				'/home': 'viewHome',
+				'/search': 'viewSearch',
+				'/discover': 'viewDiscover',
+			};
+		}
+
 		songCard(song) {
 			const wrap = document.createElement('article');
 			wrap.className = 'song';
@@ -44,7 +52,7 @@
 			meta.appendChild(rank);
 			wrap.appendChild(meta);
 			return wrap;
-		},
+		}
 
 		initPlayers(root = document) {
 			if (!window.GreenAudioPlayer) return;
@@ -59,14 +67,134 @@
 				outlineControls: true,
 				showDownloadButton: true,
 			});
-		},
+		}
 
 		viewHome() {
 			const root = document.createElement('section');
 
-			// Lista wszystkich piosenek OD RAZU
+			// KATEGORIE - zgodnie z designem: Categories: Slow, Melancholy, Fun, Powerful
+			const allowedCategories = ['Slow', 'Melancholy', 'Fun', 'Powerful'];
+
+			// KATEGORIE - kontener w jednej linii
+			const categoriesContainer = document.createElement('p');
+			categoriesContainer.className = 'section-sub';
+			categoriesContainer.style.marginBottom = '25px';
+
+			// Dodaj "Categories: " jako span z większym fontem i jaśniejszym kolorem
+			const categoriesLabel = document.createElement('span');
+			categoriesLabel.textContent = 'Categories: ';
+			categoriesLabel.style.fontSize = '13px'; // większy niż kategorie
+			categoriesLabel.style.color = '#e9e9e9'; // bardziej biały
+			categoriesLabel.style.fontWeight = '490';
+			categoriesLabel.style.letterSpacing = '0.15em';
+
+			categoriesContainer.appendChild(categoriesLabel);
+
+			// Lista piosenek
 			const list = document.createElement('div');
 			list.id = 'songs';
+
+			// Zmienna do śledzenia aktualnie wybranej kategorii
+			let activeCategory = null;
+
+			// Funkcja renderująca piosenki
+			const renderSongs = (category = null) => {
+				list.innerHTML = '';
+				const filteredSongs = category
+					? this.state.songs.filter((s) =>
+							(s.categories || []).some(
+								(cat) => cat.toLowerCase() === category.toLowerCase()
+							)
+					  )
+					: this.state.songs;
+
+				filteredSongs.forEach((s) => list.appendChild(this.songCard(s)));
+				this.initPlayers(root);
+			};
+
+			// Stwórz przyciski kategorii w jednej linii
+			allowedCategories.forEach((category, index) => {
+				const btn = document.createElement('span');
+				btn.className = 'cat-btn-inline';
+				btn.textContent = category;
+				btn.style.cursor = 'pointer';
+				btn.style.opacity = '0.85';
+				btn.style.fontSize = '12px'; // mniejszy font niż "Categories:"
+				btn.style.color = '#fefefeff'; // szary kolor
+				btn.style.transition = 'all 0.2s';
+				btn.style.marginLeft = '14px';
+				btn.style.fontFamily = 'system-ui, Arial, sans-serif';
+				btn.style.letterSpacing = '0.15em'; // większy rozstaw
+				btn.style.fontWeight = '455'; // trochę grubsze
+
+				btn.addEventListener('click', () => {
+					// Jeśli kliknięto już aktywną kategorię - RESET
+					if (
+						activeCategory &&
+						activeCategory.toLowerCase() === category.toLowerCase()
+					) {
+						activeCategory = null;
+						renderSongs(null);
+						// Usuń klasę aktywną ze wszystkich przycisków
+						categoriesContainer
+							.querySelectorAll('.cat-btn-inline')
+							.forEach((b) => {
+								b.style.fontWeight = 'normal';
+								b.style.color = '#b0b0b0ff';
+								b.style.opacity = '0.65';
+							});
+					} else {
+						// Nowa kategoria
+						activeCategory = category;
+						renderSongs(category);
+						// Usuń styl aktywny ze wszystkich przycisków
+						categoriesContainer
+							.querySelectorAll('.cat-btn-inline')
+							.forEach((b) => {
+								b.style.fontWeight = 'normal';
+								b.style.color = '#d1cfcfff';
+								b.style.opacity = '0.65';
+							});
+						// Dodaj styl aktywny do klikniętego przycisku
+						btn.style.fontWeight = '700';
+						btn.style.color = 'var(--accent)';
+						btn.style.opacity = '1';
+					}
+				});
+
+				btn.addEventListener('mouseenter', () => {
+					if (
+						!activeCategory ||
+						activeCategory.toLowerCase() !== category.toLowerCase()
+					) {
+						btn.style.opacity = '1';
+					}
+				});
+
+				btn.addEventListener('mouseleave', () => {
+					if (
+						!activeCategory ||
+						activeCategory.toLowerCase() !== category.toLowerCase()
+					) {
+						btn.style.opacity = '0.65';
+					}
+				});
+
+				categoriesContainer.appendChild(btn);
+
+				// Dodaj przecinek i spację między kategoriami (oprócz ostatniej)
+				if (index < allowedCategories.length - 1) {
+					const separator = document.createElement('span');
+					separator.textContent = ', ';
+					separator.style.color = '#efefefff'; // szary jak kategorie
+					separator.style.opacity = '0.6';
+					categoriesContainer.appendChild(separator);
+				}
+			});
+
+			root.appendChild(categoriesContainer);
+
+			// Renderuj wszystkie piosenki na start
 			this.state.songs.forEach((s) => list.appendChild(this.songCard(s)));
 			root.appendChild(list);
 
@@ -120,11 +248,11 @@
 
 			subscribe.appendChild(banner);
 
-			
 			root.appendChild(subscribe);
 
 			return root;
-		},
+		}
+
 		viewSearch() {
 			const root = document.createElement('section');
 
@@ -198,7 +326,7 @@
 			render(this.state.songs);
 
 			return root;
-		},
+		}
 
 		viewDiscover() {
 			const root = document.createElement('section');
@@ -206,36 +334,27 @@
 			const desc = document.createElement('p');
 			desc.className = 'section-sub';
 			desc.id = 'desc';
-			desc.textContent = 'Give it a try!'; // 👈 ZAWSZE ten sam tekst
+			desc.textContent = 'Give it a try!';
 			root.appendChild(desc);
-
-			// USUŃ cały button "Reset Discover"
 
 			const slot = document.createElement('div');
 			slot.id = 'slot';
 			root.appendChild(slot);
 
-			// USUŃ całą logikę z playStats/categoryCounts
-			// Po prostu losowa piosenka ZAWSZE
+			// Losowa piosenka
 			const chosen =
 				this.state.songs[Math.floor(Math.random() * this.state.songs.length)];
 			slot.appendChild(this.songCard(chosen));
 
 			this.initPlayers(root);
 			return root;
-		},
-
-		routes: {
-			'/home': 'viewHome',
-			'/search': 'viewSearch',
-			'/discover': 'viewDiscover',
-		},
+		}
 
 		currentPath() {
 			const hash = location.hash || '#/home';
 			const path = hash.replace('#', '');
 			return this.routes[path] ? path : '/home';
-		},
+		}
 
 		async renderRoute() {
 			const path = this.currentPath();
@@ -255,16 +374,16 @@
 					});
 				}, 200);
 			}
-		},
+		}
 
 		async fetchSongs() {
 			const res = await fetch(`${API_BASE}/songs`);
 			this.state.songs = await res.json();
-		},
+		}
 
 		formatAuthor(id) {
 			return this.state.authors[id] || `Author #${id}`;
-		},
+		}
 
 		onPlay(song) {
 			const stats = this.state.playStats;
@@ -273,15 +392,16 @@
 				stats.categoryCounts[c] = (stats.categoryCounts[c] || 0) + 1;
 			});
 			localStorage.setItem('playStats', JSON.stringify(stats));
-		},
+		}
 
 		async init() {
 			await this.fetchSongs();
 			window.addEventListener('hashchange', () => this.renderRoute());
 			await this.renderRoute();
-		},
-	};
+		}
+	}
 
+	const app = new App();
 	window.app = app;
 
 	function waitForPlayer() {
