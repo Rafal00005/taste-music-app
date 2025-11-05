@@ -13,14 +13,13 @@
 }
 html,
 body {
-	height: 100%;
+	min-height: 100%;
 }
 body {
 	margin: 0;
 	font: 16px/1.5 system-ui, Arial, sans-serif;
 	background: var(--bg);
 	color: var(--text);
-    
 }
 
 a {
@@ -38,6 +37,11 @@ nav,
 	margin: 0 auto;
 	padding: 0 var(--pad);
 }
+#view {
+	max-width: var(--max);
+	margin: 0 auto;
+	padding: 0;  /* ✅ BEZ PADDINGU */
+}
 
 /* ====== HERO ====== */
 .hero {
@@ -46,7 +50,8 @@ nav,
 	position: relative;
 	max-width: var(--max); /* 👈 DODAJ - ogranicza szerokość */
 	margin: 0 auto; /* 👈 DODAJ - centruje */
-	border-radius: 12px; /* 👈 DODAJ - zaokrąglone rogi (opcjonalnie) */
+	padding: 0;
+	
 }
 /* Gradient overlay - płynne ciemnienie */
 .hero::after {
@@ -59,13 +64,11 @@ nav,
 	background: linear-gradient(
 		to bottom,
 		rgba(0, 0, 0, 0) 29%,
-		rgba(0, 0, 0, 0.05) 30%,
-		rgba(0, 0, 0, 0.33)40%,
-		rgba(0, 0, 0, 0.2) 30%,
-		rgba(0, 0, 0, 0.35) 30%,
-		rgba(0, 0, 0, 0.5) 60%,
-		rgba(0, 0, 0, 0.65) 70%,
-		rgba(0, 0, 0, 0.78) 85%,
+		rgba(0, 0, 0, 0.05) 33%,
+		rgba(0, 0, 0, 0.33) 40%,
+		/* ✅ DODANA SPACJA */ rgba(0, 0, 0, 0.5) 55%,
+		rgba(0, 0, 0, 0.7) 70%,
+		rgba(0, 0, 0, 0.85) 85%,
 		rgba(0, 0, 0, 0.95) 100%
 	);
 	pointer-events: none;
@@ -169,7 +172,6 @@ nav,
 	width: 360px;
 	height: 38px;
 	margin: 0 auto; /* 👈 DODAJ - centruje player */
-    
 }
 /* kontrolka audio mniejsza */
 .song__meta {
@@ -220,13 +222,11 @@ nav,
 	background: #d32f2f;
 }
 
-
-
 /* ====== SUBSCRIBE ====== */
 #subscribe {
 	max-width: var(--max);
-	margin: 32px auto 48px;
-	padding: 0 var(--pad);
+	margin: 32px auto 10px;
+	padding: 0;
 }
 
 #subscribe .title {
@@ -247,7 +247,7 @@ nav,
 	background: url('http://localhost:3131/images/subscribe.jpg') center/cover
 		no-repeat;
 	min-height: 360px;
-	border-radius: 12px;
+	
 	position: relative;
 	overflow: hidden;
 }
@@ -260,7 +260,7 @@ nav,
 	width: 22%;
 	height: 57%;
 	object-fit: cover;
-	border-radius: 8px;
+	
 	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
@@ -330,13 +330,14 @@ nav,
 	text-align: center; /* 👈 Centruje wszystko w sekcji */
 }
 
+
 /* ====== FOOTER ====== */
 .footer {
 	text-align: center;
 	color: #8a8a8a;
 	font-size: 11px;
-	margin-top: 40px;
-	padding: 20px 0;
+	margin-top: 10px;
+	padding: 10px 0;
 	letter-spacing: 0.15em;
 }
 
@@ -563,7 +564,11 @@ nav,
 }
 
 /* Dodatkowe selektory dla pewności */
-.green-audio-player .controls .controls__slider .controls__progress .progress__pin {
+.green-audio-player
+	.controls
+	.controls__slider
+	.controls__progress
+	.progress__pin {
 	background-color: #e53935 !important;
 }
 
