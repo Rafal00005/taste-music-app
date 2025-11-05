@@ -1,18 +1,24 @@
+// Natychmiastowo wywoływana funkcja (IIFE) – izoluje zmienne od globalnego scope
 (function () {
-	const API_BASE = 'http://localhost:3131';
-	const FILES_BASE = 'http://localhost:3131';
-	const AUTHORS = { 1: 'David Renda', 2: 'David Fesliyan', 3: 'Steve Oxen' };
+	// === Stałe konfiguracyjne ===
+	const API_BASE = 'http://localhost:3131'; // endpoint API do pobierania listy utworów (JSON)
+	const FILES_BASE = 'http://localhost:3131'; // baza plików audio/obrazów (do budowania URL-i)
+	const AUTHORS = { 1: 'David Renda', 2: 'David Fesliyan', 3: 'Steve Oxen' }; // mapowanie id->nazwisko
 
+	// Główna klasa aplikacji – trzyma stan, routing i metody widoków
 	class App {
 		constructor() {
 			this.filesBase = FILES_BASE;
+			// Minimalny stan aplikacji
 			this.state = {
-				songs: [],
-				authors: AUTHORS,
+				songs: [], // pełna lista utworów pobrana z API
+				authors: AUTHORS, // słownik autorów
+				// Statystyki odtworzeń (persist w localStorage)
 				playStats: JSON.parse(
 					localStorage.getItem('playStats') || '{"categoryCounts":{}}'
 				),
 			};
+			// Prosty router oparty o hash – mapuje ścieżkę na metodę widoku
 			this.routes = {
 				'/home': 'viewHome',
 				'/search': 'viewSearch',
@@ -20,6 +26,7 @@
 			};
 		}
 
+		// Buduje kartę pojedynczego utworu (DOM) – tytuł, player, meta
 		songCard(song) {
 			const wrap = document.createElement('article');
 			wrap.className = 'song';
@@ -31,17 +38,20 @@
 			}`;
 			wrap.appendChild(title);
 
+			// Kontener dla GreenAudioPlayer
 			const audioBox = document.createElement('div');
 			audioBox.className = 'player';
 
 			const audio = document.createElement('audio');
 			audio.preload = 'metadata';
-			audio.src = `${this.filesBase}/songs/${song.filename}`;
+			audio.src = `${this.filesBase}/songs/${song.filename}`; // ścieżka do pliku audio
+			// Hook: rejestrowanie odsłuchań (zwiększa licznik kategorii)
 			audio.addEventListener('play', () => this.onPlay(song));
 
 			audioBox.appendChild(audio);
 			wrap.appendChild(audioBox);
 
+			// Sekcja meta: kategorie + pozycja w rankingu
 			const meta = document.createElement('div');
 			meta.className = 'song__meta';
 			const cats = document.createElement('span');
@@ -54,8 +64,9 @@
 			return wrap;
 		}
 
+		// Inicjalizacja GreenAudioPlayer dla nowo utworzonych węzłów
 		initPlayers(root = document) {
-			if (!window.GreenAudioPlayer) return;
+			if (!window.GreenAudioPlayer) return; // bezpieczeństwo: SDK jeszcze nie załadowane
 			const nodes = root.querySelectorAll('.player:not([data-gap-init])');
 			if (!nodes.length) return;
 			nodes.forEach((n) => n.setAttribute('data-gap-init', '1'));
@@ -69,35 +80,35 @@
 			});
 		}
 
+		// === Widok: Home ===
 		viewHome() {
 			const root = document.createElement('section');
 
-			// KATEGORIE - zgodnie z designem: Categories: Slow, Melancholy, Fun, Powerful
+			// Dozwolone kategorie do filtrowania (spójne z designem)
 			const allowedCategories = ['Slow', 'Melancholy', 'Fun', 'Powerful'];
 
-			// KATEGORIE - kontener w jednej linii
+			// Pasek "Categories" (inline)
 			const categoriesContainer = document.createElement('p');
 			categoriesContainer.className = 'section-sub';
 			categoriesContainer.style.marginBottom = '25px';
 
-			// Dodaj "Categories: " jako span z większym fontem i jaśniejszym kolorem
+			// Label
 			const categoriesLabel = document.createElement('span');
 			categoriesLabel.textContent = 'Categories: ';
-			categoriesLabel.style.fontSize = '13px'; // większy niż kategorie
-			categoriesLabel.style.color = '#e9e9e9'; // bardziej biały
+			categoriesLabel.style.fontSize = '13px';
+			categoriesLabel.style.color = '#e9e9e9';
 			categoriesLabel.style.fontWeight = '490';
 			categoriesLabel.style.letterSpacing = '0.15em';
-
 			categoriesContainer.appendChild(categoriesLabel);
 
-			// Lista piosenek
+			// Lista utworów (mount)
 			const list = document.createElement('div');
 			list.id = 'songs';
 
-			// Zmienna do śledzenia aktualnie wybranej kategorii
+			// Aktualnie wybrana kategoria (null = brak filtra)
 			let activeCategory = null;
 
-			// Funkcja renderująca piosenki
+			// Rerender listy z opcjonalnym filtrem po kategorii
 			const renderSongs = (category = null) => {
 				list.innerHTML = '';
 				const filteredSongs = category
@@ -109,33 +120,33 @@
 					: this.state.songs;
 
 				filteredSongs.forEach((s) => list.appendChild(this.songCard(s)));
-				this.initPlayers(root);
+				this.initPlayers(root); // ważne: po DOM insert musimy aktywować player
 			};
 
-			// Stwórz przyciski kategorii w jednej linii
+			// Generowanie przycisków kategorii + logika aktyw/hover
 			allowedCategories.forEach((category, index) => {
 				const btn = document.createElement('span');
 				btn.className = 'cat-btn-inline';
 				btn.textContent = category;
 				btn.style.cursor = 'pointer';
 				btn.style.opacity = '0.85';
-				btn.style.fontSize = '12px'; // mniejszy font niż "Categories:"
-				btn.style.color = '#fefefeff'; // szary kolor
+				btn.style.fontSize = '12px';
+				btn.style.color = '#fefefeff';
 				btn.style.transition = 'all 0.2s';
 				btn.style.marginLeft = '14px';
 				btn.style.fontFamily = 'system-ui, Arial, sans-serif';
-				btn.style.letterSpacing = '0.15em'; // większy rozstaw
-				btn.style.fontWeight = '455'; // trochę grubsze
+				btn.style.letterSpacing = '0.15em';
+				btn.style.fontWeight = '455';
 
 				btn.addEventListener('click', () => {
-					// Jeśli kliknięto już aktywną kategorię - RESET
+					// Kliknięcie w aktywną kategorię = reset filtra
 					if (
 						activeCategory &&
 						activeCategory.toLowerCase() === category.toLowerCase()
 					) {
 						activeCategory = null;
 						renderSongs(null);
-						// Usuń klasę aktywną ze wszystkich przycisków
+						// Reset stylów aktywności
 						categoriesContainer
 							.querySelectorAll('.cat-btn-inline')
 							.forEach((b) => {
@@ -144,10 +155,9 @@
 								b.style.opacity = '0.65';
 							});
 					} else {
-						// Nowa kategoria
+						// Ustaw nową kategorię i podświetl aktywny przycisk
 						activeCategory = category;
 						renderSongs(category);
-						// Usuń styl aktywny ze wszystkich przycisków
 						categoriesContainer
 							.querySelectorAll('.cat-btn-inline')
 							.forEach((b) => {
@@ -155,7 +165,6 @@
 								b.style.color = '#d1cfcfff';
 								b.style.opacity = '0.65';
 							});
-						// Dodaj styl aktywny do klikniętego przycisku
 						btn.style.fontWeight = '700';
 						btn.style.color = 'var(--accent)';
 						btn.style.opacity = '1';
@@ -182,11 +191,11 @@
 
 				categoriesContainer.appendChild(btn);
 
-				// Dodaj przecinek i spację między kategoriami (oprócz ostatniej)
+				// Separator między kategoriami (estetyka)
 				if (index < allowedCategories.length - 1) {
 					const separator = document.createElement('span');
 					separator.textContent = ', ';
-					separator.style.color = '#efefefff'; // szary jak kategorie
+					separator.style.color = '#efefefff';
 					separator.style.opacity = '0.6';
 					categoriesContainer.appendChild(separator);
 				}
@@ -194,13 +203,12 @@
 
 			root.appendChild(categoriesContainer);
 
-			// Renderuj wszystkie piosenki na start
+			// Render startowy: wszystkie utwory
 			this.state.songs.forEach((s) => list.appendChild(this.songCard(s)));
 			root.appendChild(list);
-
 			this.initPlayers(root);
 
-			// SUBSCRIBE SECTION
+			// Sekcja "Subscribe" (baner promocyjny)
 			const subscribe = document.createElement('section');
 			subscribe.id = 'subscribe';
 
@@ -225,15 +233,12 @@
 
 			const copySub = document.createElement('div');
 			copySub.className = 'copy-sub';
-
 			const copySubTitle = document.createElement('div');
 			copySubTitle.className = 'copy-sub-title';
 			copySubTitle.textContent = 'NEW ALBUM';
-
 			const copySubText = document.createElement('div');
 			copySubText.className = 'copy-sub-text';
 			copySubText.textContent = 'Available only for subscribers';
-
 			copySub.appendChild(copySubTitle);
 			copySub.appendChild(copySubText);
 			banner.appendChild(copySub);
@@ -241,27 +246,29 @@
 			const cta = document.createElement('button');
 			cta.className = 'cta';
 			cta.textContent = 'JOIN NOW';
+			// Prosty nawigacyjny redirect do pseudo-trasy join-now
 			cta.addEventListener('click', () => {
 				location.href = '#/join-now';
 			});
 			banner.appendChild(cta);
 
 			subscribe.appendChild(banner);
-
 			root.appendChild(subscribe);
 
 			return root;
 		}
 
+		// === Widok: Search ===
 		viewSearch() {
 			const root = document.createElement('section');
 
-			// DODAJ TYTUŁ "SEARCH"
+			// Nagłówek sekcji
 			const title = document.createElement('h2');
 			title.className = 'section-title';
 			title.textContent = 'SEARCH';
 			root.appendChild(title);
 
+			// Formularz wyszukiwania po tytule/autorzę
 			const form = document.createElement('form');
 			form.className = 'search-form';
 			form.id = 'searchForm';
@@ -283,6 +290,7 @@
 			form.appendChild(btnS);
 			root.appendChild(form);
 
+			// Licznik wyników + kontener wyników + info o braku
 			const counter = document.createElement('p');
 			counter.className = 'section-sub';
 			counter.id = 'counter';
@@ -298,6 +306,7 @@
 			nores.hidden = true;
 			root.appendChild(nores);
 
+			// Matcher: porównuje q z tytułem lub autorem (case-insensitive)
 			const matchName = (song, query) => {
 				if (!query) return true;
 				const qv = query.trim().toLowerCase();
@@ -305,6 +314,7 @@
 				return song.title.toLowerCase().includes(qv) || author.includes(qv);
 			};
 
+			// Render wyników wyszukiwania i odświeżenie playerów
 			const render = (items) => {
 				results.innerHTML = '';
 				items.forEach((s) => results.appendChild(this.songCard(s)));
@@ -317,31 +327,42 @@
 				this.initPlayers(root);
 			};
 
+			// Obsługa submitu formularza
 			form.addEventListener('submit', (e) => {
 				e.preventDefault();
 				const list = this.state.songs.filter((s) => matchName(s, q.value));
 				render(list);
 			});
 
+			// Start: pokaż wszystko
 			render(this.state.songs);
 
 			return root;
 		}
 
+		// === Widok: Discover ===
 		viewDiscover() {
 			const root = document.createElement('section');
 
+			// DUŻY nagłówek "DISCOVER"
+			const title = document.createElement('h2');
+			title.className = 'section-title section-title--discover';
+			title.textContent = 'DISCOVER';
+			root.appendChild(title);
+
+			// Podtytuł
 			const desc = document.createElement('p');
 			desc.className = 'section-sub';
 			desc.id = 'desc';
 			desc.textContent = 'Give it a try!';
 			root.appendChild(desc);
 
+			// Miejsce na kartę piosenki
 			const slot = document.createElement('div');
 			slot.id = 'slot';
 			root.appendChild(slot);
 
-			// Losowa piosenka
+			// Losowy utwór
 			const chosen =
 				this.state.songs[Math.floor(Math.random() * this.state.songs.length)];
 			slot.appendChild(this.songCard(chosen));
@@ -350,22 +371,25 @@
 			return root;
 		}
 
+		// Zwraca aktualną ścieżkę hash (fallback na /home)
 		currentPath() {
 			const hash = location.hash || '#/home';
 			const path = hash.replace('#', '');
 			return this.routes[path] ? path : '/home';
 		}
 
+		// Renderuje widok dla aktualnej trasy i podświetla aktywny link w nav
 		async renderRoute() {
 			const path = this.currentPath();
 			document.querySelectorAll('nav a').forEach((a) => {
 				a.classList.toggle('active', a.getAttribute('href') === '#' + path);
 			});
 			const viewName = this.routes[path];
-			const view = this[viewName]();
+			const view = this[viewName](); // wywołanie metody widoku
 			const mount = document.getElementById('view');
 			mount.innerHTML = '';
 			mount.appendChild(view);
+			// Dodatkowa inicjalizacja GAP (gdyby coś się podmontowało asynchronicznie)
 			if (window.GreenAudioPlayer) {
 				setTimeout(() => {
 					GreenAudioPlayer.init({
@@ -376,15 +400,18 @@
 			}
 		}
 
+		// Pobiera listę utworów z API i zapisuje w state
 		async fetchSongs() {
 			const res = await fetch(`${API_BASE}/songs`);
 			this.state.songs = await res.json();
 		}
 
+		// Zamienia id autora na nazwę (fallback: "Author #<id>")
 		formatAuthor(id) {
 			return this.state.authors[id] || `Author #${id}`;
 		}
 
+		// Rejestruje odsłuch (inkrementuje liczniki kategorii w localStorage)
 		onPlay(song) {
 			const stats = this.state.playStats;
 			if (!stats.categoryCounts) stats.categoryCounts = {};
@@ -394,6 +421,7 @@
 			localStorage.setItem('playStats', JSON.stringify(stats));
 		}
 
+		// Inicjalizacja aplikacji: 1) pobierz dane 2) nasłuchuj zmiany hash 3) wyrenderuj widok
 		async init() {
 			await this.fetchSongs();
 			window.addEventListener('hashchange', () => this.renderRoute());
@@ -401,14 +429,16 @@
 		}
 	}
 
+	// Instancja app – export na window do debugowania (opcjonalne)
 	const app = new App();
 	window.app = app;
 
+	// Czeka aż biblioteka GreenAudioPlayer będzie dostępna, potem startuje app
 	function waitForPlayer() {
 		if (window.GreenAudioPlayer) {
-			setTimeout(() => app.init(), 200);
+			setTimeout(() => app.init(), 200); // krótka pauza: DOM + GAP gotowe
 		} else {
-			setTimeout(waitForPlayer, 200);
+			setTimeout(waitForPlayer, 200); // retry co 200 ms
 		}
 	}
 

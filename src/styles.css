@@ -6,6 +6,8 @@
 	--bg: #0b0b0b;
 	--text: #e9e9e9;
 	--muted: #bdbdbd;
+	--column: 520px; /* szerokość kolumny z utworami */
+	--player-max: 380px; /* maksymalna szerokość playera */
 }
 
 * {
@@ -40,108 +42,122 @@ nav,
 #view {
 	max-width: var(--max);
 	margin: 0 auto;
-	padding: 0;  /* ✅ BEZ PADDINGU */
+	padding: 0; /* ✅ BEZ PADDINGU */
 }
 
 /* ====== HERO ====== */
 .hero {
-	height: 420px;
+	max-width: var(--max);
+	width: 100%;
+	margin: 0 auto;
+
+	/* STAŁE PROPORCJE – bez ręcznych wysokości */
+	aspect-ratio: 16 / 9;
+	height: auto;
+	min-height: clamp(360px, 42vw, 520px);
+
 	background: var(--hero) center 28% / cover no-repeat;
+
 	position: relative;
-	max-width: var(--max); /* 👈 DODAJ - ogranicza szerokość */
-	margin: 0 auto; /* 👈 DODAJ - centruje */
-	padding: 0;
-	
+	border-radius: 0 0 12px 12px;
+	overflow: hidden; /* nic nie wystaje poza radius */
 }
-/* Gradient overlay - płynne ciemnienie */
+
+/* Gradient – czarny dół, płynne przejście */
 .hero::after {
 	content: '';
 	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	inset: 0;
+	border-radius: inherit;
+	pointer-events: none;
 	background: linear-gradient(
 		to bottom,
-		rgba(0, 0, 0, 0) 29%,
-		rgba(0, 0, 0, 0.05) 33%,
-		rgba(0, 0, 0, 0.33) 40%,
-		/* ✅ DODANA SPACJA */ rgba(0, 0, 0, 0.5) 55%,
-		rgba(0, 0, 0, 0.7) 70%,
-		rgba(0, 0, 0, 0.85) 85%,
-		rgba(0, 0, 0, 0.95) 100%
+		rgba(0, 0, 0, 0) 0%,
+		rgba(0, 0, 0, 0.08) 25%,
+		rgba(0, 0, 0, 0.25) 45%,
+		rgba(0, 0, 0, 0.55) 60%,
+		rgba(0, 0, 0, 0.78) 75%,
+		rgba(0, 0, 0, 0.93) 90%,
+		rgba(0, 0, 0, 1) 100%
 	);
-	pointer-events: none;
-	border-radius: 12px;
 }
+
+/* Overlay – zawsze środek kadru */
 .hero__overlay {
-	position: relative; /*dodane*/
-	max-width: var(--max);
-	margin: 0 auto;
-	padding: 32px var(--pad) 0;
-	text-align: center; /* 👈 DODAJ - centruje wszystko w środku */
-	height: 100%; /* 👈 DODAJ */
-	display: flex; /* 👈 DODAJ */
-	flex-direction: column; /* 👈 DODAJ */
-	z-index: 1;
+	position: absolute;
+	inset: 0;
+	z-index: 2;
+	display: grid;
+	place-items: center;
+	text-align: center;
+	pointer-events: none;
+
+	transform: translateY(9%); /* ↓ obniża oba napisy; dopasuj 7–11% */
 }
+
 .logo {
-	font-size: 49px; /* 👈 BYŁO: 48px - zwiększam */
+	font-size: 52px;
 	font-weight: 800;
-	letter-spacing: 0.59em;
-	margin: 0; /* 👈 DODAJ */
+	letter-spacing: 1em; /* trochę większe odstępy między literami */
 	color: #ffffff;
-	padding-top: 80px;
+	margin: 0;
+	padding-top: 0;
+	transform: translate(
+		4%,
+		70%
+	); /* ⬅️ X = 3% (lekko w prawo), Y = 10% (niżej) */
 }
 .logo__tag {
-	letter-spacing: 0.4em; /* 👈 BYŁO: 0.6em - większy rozstaw */
-	margin: 12px 0 24px;
 	font-size: 12px;
-	line-height: 1.4;
-	font-weight: 700; /* 👈 BYŁO: normal - teraz grubszy */
+	font-weight: 800;
 	color: #ffffff;
+
+	letter-spacing: 0.55em; /* więcej „spacji” między literami */
+	line-height: 2.9; /* większy odstęp między ENGAGE / IN / ART */
+
+	margin: 0; /* bez dodatkowego odsunięcia w dół */
+	transform: translateY(-50%); /* ↑ podnieś napis; dopasuj 6–14% */
 }
+
 .nav {
 	display: flex;
 	gap: 75px;
 	justify-content: center;
 	max-width: var(--max);
-	margin: 0 auto; /* 👈 BYŁO: margin-top: 0 auto; - POPRAWKA! */
+	margin: 0 auto;
 	padding: 10px 0;
 }
-
 .nav a {
-	color: #ffffff; /* 👈 BYŁO: var(--text) - teraz czysty biały */
+	color: #ffffff;
 	opacity: 0.7;
 	font-size: 15px;
-	font-weight: 700; /* 👈 BYŁO: 500 - teraz grubszy */
+	font-weight: 700;
 }
-
 .nav a.active,
 .nav a:hover {
 	opacity: 1;
 }
 
 /* ====== SECTION TITLE ====== */
-
 .section-title {
 	margin: 24px 0 4px;
 	letter-spacing: 0.35em;
-	text-align: center; /* 👈 Wycentrowany tytuł */
+	text-align: center;
 }
-
+.section-title--discover {
+	color: #bbbaba;
+	text-transform: uppercase;
+	letter-spacing: 0.25em;
+	font-weight: 500;
+	margin: 40px 0 24px;
+}
 .section-sub {
 	margin: 0 0 14px;
 	color: var(--muted);
-	text-align: center; /* 👈 Wycentrowany podtytuł */
-}
-/* ====== SONG LIST / PLAYER ====== */
-
-.section-sub {
-	margin: 0 0 14px;
-	color: var(--muted);
+	text-align: center;
 }
 
+/* ====== CATEGORIES ====== */
 .cats {
 	display: flex;
 	gap: 18px;
@@ -163,24 +179,40 @@ nav,
 	opacity: 1;
 }
 
+/* ====== SONG CARD / PLAYER ====== */
 .song {
-	margin: 18px auto; /* 👈 BYŁO: margin: 18px 0; - TERAZ: auto wycentrowuje */
-	max-width: 520px; /* 👈 DODAJ - ogranicza szerokość */
-	text-align: center; /* 👈 DODAJ */
+	max-width: 520px;
+	margin: 10px auto; /* scalone: ostatnia wersja */
+	text-align: center;
 }
 .player {
-	width: 360px;
+	width: clamp(240px, 92vw, 360px); /* responsywna szerokość */
 	height: 38px;
-	margin: 0 auto; /* 👈 DODAJ - centruje player */
+	margin: 8px;
+	margin: 4px auto 8px; /* top | left/right | bottom */
 }
-/* kontrolka audio mniejsza */
+/* żeby GAP rozciągał się do szerokości kontenera .player */
+.green-audio-player,
+.green-audio-player .controls {
+	width: 65%;
+}
+@media (max-width: 480px) {
+  .green-audio-player,
+  .green-audio-player .controls {
+    width: 90%;
+  }
+}
+
+/* meta pod playerem */
 .song__meta {
+	margin-top: 10px;
 	font-size: 12px;
 	color: #bdbdbd;
 	display: flex;
 	gap: 16px;
-	justify-content: center; /* 👈 DODAJ - centruje meta */
+	justify-content: center;
 }
+
 /* ====== SEARCH FORM ====== */
 .search-form {
 	display: flex;
@@ -189,13 +221,11 @@ nav,
 	justify-content: center;
 	margin: 20px 0;
 }
-
 .search-form label {
 	display: flex;
 	gap: 8px;
 	align-items: center;
 }
-
 .search-form input {
 	padding: 8px 12px;
 	border: 1px solid #444;
@@ -205,7 +235,6 @@ nav,
 	font-size: 14px;
 	width: 200px;
 }
-
 .search-form .btn {
 	background: var(--accent);
 	color: #fff;
@@ -217,7 +246,6 @@ nav,
 	font-size: 13px;
 	letter-spacing: 0.1em;
 }
-
 .search-form .btn:hover {
 	background: #d32f2f;
 }
@@ -228,7 +256,6 @@ nav,
 	margin: 32px auto 10px;
 	padding: 0;
 }
-
 #subscribe .title {
 	position: absolute;
 	top: -3%;
@@ -242,16 +269,13 @@ nav,
 	z-index: 10;
 	white-space: nowrap;
 }
-
 #subscribe .banner {
 	background: url('http://localhost:3131/images/subscribe.jpg') center/cover
 		no-repeat;
 	min-height: 360px;
-	
 	position: relative;
 	overflow: hidden;
 }
-
 #subscribe .artist {
 	position: absolute;
 	right: 16%;
@@ -260,10 +284,8 @@ nav,
 	width: 22%;
 	height: 57%;
 	object-fit: cover;
-	
 	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
-
 #subscribe .copy-main {
 	position: absolute;
 	left: 58%;
@@ -280,11 +302,9 @@ nav,
 	max-width: 26%;
 	word-spacing: 999px;
 }
-
 #subscribe .copy-main .red {
 	color: var(--accent);
 }
-
 #subscribe .copy-sub {
 	position: absolute;
 	right: 13%;
@@ -296,20 +316,17 @@ nav,
 	line-height: 1.4;
 	font-weight: 200;
 }
-
 #subscribe .copy-sub-title {
 	font-size: clamp(12px, 1.8vw, 14px);
 	letter-spacing: 0.3em;
 	font-weight: 700;
 	margin-bottom: 4px;
 }
-
 #subscribe .copy-sub-text {
 	font-size: clamp(10px, 1.4vw, 11px);
 	letter-spacing: 0.2em;
 	font-weight: 300;
 }
-
 #subscribe .cta {
 	position: absolute;
 	left: 12%;
@@ -327,9 +344,8 @@ nav,
 
 /* ====== SECTION LAYOUT ====== */
 #view section {
-	text-align: center; /* 👈 Centruje wszystko w sekcji */
+	text-align: center;
 }
-
 
 /* ====== FOOTER ====== */
 .footer {
@@ -342,32 +358,18 @@ nav,
 }
 
 /* ====== RESPONSIVE ====== */
-
-/* Tablet i mniejsze laptopy */
-@media (max-width: 1024px) {
-	.hero {
-		height: 380px;
-	}
-}
-
 /* Tablet portrait */
 @media (max-width: 860px) {
-	.hero {
-		height: 340px;
-	}
-
 	#subscribe .title {
 		font-size: 22px;
 		letter-spacing: 0.22em;
 		top: -10px;
 	}
-
 	#subscribe .artist {
 		width: 140px;
 		height: 170px;
 		right: 60px;
 	}
-
 	#subscribe .copy-main {
 		font-size: 32px;
 		left: 52%;
@@ -379,42 +381,35 @@ nav,
 	#subscribe .banner {
 		min-height: 280px;
 	}
-
 	#subscribe .title {
 		font-size: 18px;
 		letter-spacing: 0.2em;
 		top: -8px;
 	}
-
 	#subscribe .artist {
 		width: 100px;
 		height: 120px;
 		right: 30px;
 		top: 50%;
 	}
-
 	#subscribe .copy-main {
 		font-size: 24px;
 		left: 45%;
 		top: 48%;
 		max-width: 140px;
 	}
-
 	#subscribe .copy-sub {
 		right: 30px;
 		bottom: 50px;
 		font-size: 8px;
 		letter-spacing: 0.15em;
 	}
-
 	#subscribe .copy-sub-title {
 		font-size: 10px;
 	}
-
 	#subscribe .copy-sub-text {
 		font-size: 7px;
 	}
-
 	#subscribe .cta {
 		left: 30px;
 		bottom: 60px;
@@ -424,40 +419,34 @@ nav,
 	}
 }
 
-/* Mobile portrait - większe telefony (iPhone 12 Pro Max, Samsung S21+) */
+/* Mobile portrait - większe telefony */
 @media (max-width: 480px) {
 	#subscribe .banner {
 		min-height: 260px;
 	}
-
 	#subscribe .title {
 		font-size: 16px;
 		letter-spacing: 0.18em;
 		top: -8px;
 	}
-
 	#subscribe .artist {
 		width: 85px;
 		height: 100px;
 		right: 20px;
 	}
-
 	#subscribe .copy-main {
 		font-size: 22px;
 		left: 43%;
 		max-width: 130px;
 	}
-
 	#subscribe .copy-sub {
 		right: 20px;
 		bottom: 45px;
 		font-size: 7px;
 	}
-
 	#subscribe .copy-sub-title {
 		font-size: 9px;
 	}
-
 	#subscribe .cta {
 		left: 20px;
 		bottom: 55px;
@@ -466,40 +455,34 @@ nav,
 	}
 }
 
-/* Mobile portrait - standardowe telefony (iPhone 12, Samsung S21) */
+/* Mobile portrait - standardowe telefony */
 @media (max-width: 400px) {
 	#subscribe .banner {
 		min-height: 240px;
 	}
-
 	#subscribe .title {
 		font-size: 14px;
 		letter-spacing: 0.15em;
 		top: -6px;
 	}
-
 	#subscribe .artist {
 		width: 75px;
 		height: 90px;
 		right: 15px;
 	}
-
 	#subscribe .copy-main {
 		font-size: 20px;
 		left: 42%;
 		max-width: 115px;
 	}
-
 	#subscribe .copy-sub {
 		right: 15px;
 		bottom: 40px;
 		font-size: 6px;
 	}
-
 	#subscribe .copy-sub-title {
 		font-size: 8px;
 	}
-
 	#subscribe .cta {
 		left: 15px;
 		bottom: 50px;
@@ -508,40 +491,34 @@ nav,
 	}
 }
 
-/* Mobile portrait - małe telefony (iPhone SE, małe Androidy) */
+/* Mobile portrait - małe telefony */
 @media (max-width: 360px) {
 	#subscribe .banner {
 		min-height: 220px;
 	}
-
 	#subscribe .title {
 		font-size: 12px;
 		letter-spacing: 0.12em;
 		top: -5px;
 	}
-
 	#subscribe .artist {
 		width: 65px;
 		height: 78px;
 		right: 12px;
 	}
-
 	#subscribe .copy-main {
 		font-size: 18px;
 		left: 40%;
 		max-width: 100px;
 	}
-
 	#subscribe .copy-sub {
 		right: 12px;
 		bottom: 35px;
 		font-size: 5px;
 	}
-
 	#subscribe .copy-sub-title {
 		font-size: 7px;
 	}
-
 	#subscribe .cta {
 		left: 12px;
 		bottom: 45px;
@@ -550,11 +527,7 @@ nav,
 	}
 }
 
-/* ====== AUDIO PLAYER - CZERWONA KROPKA ====== */
-/* NADPISANIE KOLORU ZIELONEJ KROPKI NA CZERWONĄ */
-
-/* Dokładne nadpisanie stylów z paczki green-audio-player */
-/* Według screenshota z DevTools, kropka ma klasę .progress__pin */
+/* ====== AUDIO PLAYER – czerwone nadpisania ====== */
 .green-audio-player .controls__slider .controls__progress .pin,
 .green-audio-player .slider .gap-progress .pin,
 .controls__progress .pin,
@@ -563,29 +536,20 @@ nav,
 	background-color: #e53935 !important;
 }
 
-/* Dodatkowe selektory dla pewności */
 .green-audio-player
 	.controls
 	.controls__slider
 	.controls__progress
-	.progress__pin {
-	background-color: #e53935 !important;
-}
-
+	.progress__pin,
 .green-audio-player .slider .progress__pin {
 	background-color: #e53935 !important;
 }
 
-/* Wszystkie możliwe kombinacje z DevTools */
-.controls__progress.gap-progress .pin.progress__pin {
-	background-color: #e53935 !important;
-}
-
+.controls__progress.gap-progress .pin.progress__pin,
 div.controls__progress.gap-progress div.pin.progress__pin {
 	background-color: #e53935 !important;
 }
 
-/* NADPISANIE KOLORU ZIELONEGO PASKA POSTĘPU NA CZERWONY */
 .green-audio-player .controls__progress,
 .green-audio-player .gap-progress,
 .controls__progress,
@@ -593,10 +557,36 @@ div.controls__progress.gap-progress div.pin.progress__pin {
 	background-color: #e53935 !important;
 	background: #e53935 !important;
 }
-
-/* Wypełnienie paska postępu */
 .green-audio-player .controls__progress::before,
 .gap-progress::before {
 	background-color: #e53935 !important;
 	background: #e53935 !important;
 }
+
+/* --- Songs: tytuł i meta (ostatnia wersja) --- */
+.song .song__title {
+	font-size: 15px;
+	line-height: 1.25;
+	letter-spacing: 0.15em;
+	font-weight: 700;
+	margin-bottom: 37px;
+	transform: translateY(
+		10px
+	); /* zwiększ na 8–10px jeśli chcesz jeszcze niżej */
+}
+@media (min-width: 768px) {
+	.song .song__title {
+		font-size: 16px;
+	}
+}
+@media (min-width: 1200px) {
+	.song .song__title {
+		font-size: 17px;
+	}
+}
+.song__meta {
+	font-size: 11px;
+	gap: 12px;
+	margin-top: 8px;
+}
+
