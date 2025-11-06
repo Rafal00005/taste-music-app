@@ -278,7 +278,7 @@
 			const q = document.createElement('input');
 			q.id = 'q';
 			q.type = 'text';
-			q.placeholder = 'Song title or author';
+			
 			labName.appendChild(q);
 
 			const btnS = document.createElement('button');
