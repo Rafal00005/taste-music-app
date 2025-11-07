@@ -25,6 +25,12 @@
 				'/discover': 'viewDiscover',
 			};
 		}
+        //  DODANE: Funkcja do zamiany tekstów na uppercase (zgodnie z wymogiem klienta)
+		applyUppercase(scope = document) {
+			scope.querySelectorAll('[data-upper]').forEach((el) => {
+				el.textContent = el.textContent.toUpperCase();
+			});
+		}
 
 		// Buduje kartę pojedynczego utworu (DOM) – tytuł, player, meta
 		songCard(song) {
@@ -228,7 +234,7 @@
 
 			const copy = document.createElement('div');
 			copy.className = 'copy-main';
-			copy.innerHTML = 'Dean<br>Hen<span class="red">son</span>';
+			copy.innerHTML = copy.innerHTML = '<span class="name-dean">Dean</span><br><span class="name-hen">Hen</span><span class="name-son red">son</span>';
 			banner.appendChild(copy);
 
 			const copySub = document.createElement('div');
@@ -264,7 +270,7 @@
 
 			// Nagłówek sekcji
 			const title = document.createElement('h2');
-			title.className = 'section-title';
+			title.className = 'section-title section-title--search';
 			title.textContent = 'SEARCH';
 			root.appendChild(title);
 
