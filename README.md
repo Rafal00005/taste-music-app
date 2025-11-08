@@ -1,8 +1,15 @@
 # TASTE — Music SPA (Vite + JSON-Server)
 ## How to run (dev)
 npm install
+
 npm run start
+
+npm build
 npm run start:deploy
+
+
+
+
 # App: http://localhost:5173
 # API: http://localhost:3131 (GET /songs)
 
