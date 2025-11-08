@@ -5,17 +5,20 @@
 	"description": "Music SPA with Vite + JSON-Server",
 	"license": "ISC",
 	"scripts": {
-		"web": "vite src",
+		"web": "vite",
 		"api": "json-server --watch app.json --port 3131 --static ./public",
 		"start": "concurrently -k -n API,WEB -c red,green \"npm:api\" \"npm:web\"",
 		"sass": "sass src/sass/style.scss:styles.css --watch",
 		"build": "vite build",
 		"preview": "vite preview",
+		"start:deploy": "node server.mjs",
 		"test": "echo \"No tests yet\" && exit 0"
+	},
+	"dependencies": {
+		"json-server": "^0.17.4"
 	},
 	"devDependencies": {
 		"concurrently": "^9.2.1",
-		"json-server": "0.17.4",
 		"sass": "^1.93.3",
 		"vite": "^6.4.1"
 	}
