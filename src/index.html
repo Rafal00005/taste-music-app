@@ -44,14 +44,14 @@
 			<a href="#/discover" data-upper>Discover</a>
 		</nav>
 
-		<!-- ===== MAIN VIEW (dynamicznie podmieniany przez JS) ===== -->
+		<!-- ===== MAIN VIEW (dynamically replaced by JS) ===== -->
 		<main id="view">
-			<!-- === Sekcja Subscribe (widoczna na stronie głównej) === -->
+			<!-- === Subscribe section (visible on the home page) === -->
 			<section id="subscribe">
 				<h3 class="title" data-upper>Subscribe now</h3>
 
 				<div class="banner">
-					<!-- Mała szara okładka z podpisem -->
+					<!-- Small gray cover with caption -->
 					<figure class="artist">
 						<img
 							src="http://localhost:3131/images/artist-gray.jpg"
@@ -62,7 +62,7 @@
 						</figcaption>
 					</figure>
 
-					<!-- Teksty i przycisk -->
+					<!-- Text and button -->
 					<p class="copy-main">
 						<span class="name-dean" data-upper>Dean</span><br />
 						<span class="name-hen" data-upper>Hen</span
@@ -88,7 +88,7 @@
 		<!-- ===== JS ===== -->
 		<script type="module" src="./js/app.js"></script>
 
-		<!-- ===== Uppercase converter (klient wymaga przez JS) ===== -->
+		<!-- ===== Uppercase converter (client requires via JS) ===== -->
 		<script>
 			function applyUppercase(scope = document) {
 				scope.querySelectorAll('[data-upper]').forEach((el) => {

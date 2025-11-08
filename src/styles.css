@@ -1,4 +1,6 @@
-/* ====== SETTINGS ====== */
+/* ====== SETTINGS / USTAWIENIA ====== */
+/* Global design tokens: max widths, colors, spacing
+   Globalne zmienne: maks. szerokości, kolory, odstępy */
 :root {
 	--max: 760px;
 	--pad: 16px;
@@ -9,10 +11,12 @@
 	--column: 520px;
 	--player-max: 380px;
 
-	/* płynny offset tytułu SUBSCRIBE (skaluje się) */
+	/* Fluid offset for SUBSCRIBE title (scales with viewport)
+	   Płynny offset tytułu SUBSCRIBE (skaluje się z widokiem) */
 	--sub-title-shift: clamp(12px, 3vw, 22px);
 }
 
+/* Base reset / Bazowy reset */
 * {
 	box-sizing: border-box;
 }
@@ -27,6 +31,7 @@ body {
 	color: var(--text);
 }
 
+/* Links / Linki */
 a {
 	color: #9cc0ff;
 	text-decoration: none;
@@ -35,6 +40,7 @@ a:hover {
 	text-decoration: underline;
 }
 
+/* Shared page containers / Wspólne kontenery strony */
 nav,
 #view,
 .footer {
@@ -49,6 +55,8 @@ nav,
 }
 
 /* ====== HERO ====== */
+/* Visual header with fixed aspect & gradient overlay
+   Nagłówek graficzny z ustalonymi proporcjami i gradientem */
 .hero {
 	max-width: var(--max);
 	width: 100%;
@@ -63,7 +71,8 @@ nav,
 	background-color: var(--bg);
 }
 
-/* cienki pasek maskujący szew u dołu */
+/* Thin mask to hide bottom seam on dark bg
+   Cienki pasek maskujący szew u dołu */
 .hero::before {
 	content: '';
 	position: absolute;
@@ -76,7 +85,8 @@ nav,
 	border-radius: inherit;
 }
 
-/* Gradient – od góry przeźroczysty, na dole czarny */
+/* Readability gradient from transparent top to dark bottom
+   Gradient – od góry przeźroczysty, na dole czarny */
 .hero::after {
 	content: '';
 	position: absolute;
@@ -84,7 +94,7 @@ nav,
 	right: -1px;
 	top: -1px;
 	bottom: -1px;
-	z-index: 1;
+	z-index: 1;                /* under overlay text / pod overlayem tekstów */
 	pointer-events: none;
 	border-radius: inherit;
 	background: linear-gradient(
@@ -99,27 +109,28 @@ nav,
 	);
 }
 
-/* Napisy na hero – stabilna pozycja */
+/* Stable centered overlay for headline/tagline
+   Napisy na hero – stabilna centralna pozycja */
 .hero__overlay {
 	position: absolute;
 	left: 50%;
 	top: calc(50% + clamp(16px, 4vw, 44px));
 	transform: translate(-50%, -50%);
 	text-align: center;
-	z-index: 2;
+	z-index: 2; /* above gradient / nad gradientem */
 }
 
-/* TASTE */
+/* TASTE wordmark / Logotyp TASTE */
 .logo {
 	font-size: 52px;
 	font-weight: 800;
 	letter-spacing: 0.65em;
 	color: #fff;
 	margin: 0;
-	transform: translateX(1.6vw);
+	transform: translateX(1.6vw); /* optical balance / korekta optyczna */
 }
 
-/* ENGAGE IN ART */
+/* ENGAGE IN ART tagline / Slogan */
 .logo__tag {
 	font-size: 12px;
 	font-weight: 700;
@@ -130,7 +141,7 @@ nav,
 	transform: translateY(-8px);
 }
 
-/* bardzo małe ekrany */
+/* Tiny devices adjustments / Korekty dla bardzo małych ekranów */
 @media (max-width: 480px) {
 	.hero__overlay {
 		top: calc(50% + 24px);
@@ -141,6 +152,8 @@ nav,
 }
 
 /* ====== NAV ====== */
+/* Centered nav with big gaps for airy feel
+   Wyśrodkowana nawigacja z dużymi odstępami */
 .nav {
 	display: flex;
 	gap: 75px;
@@ -161,11 +174,13 @@ nav,
 }
 
 /* ====== SECTION TITLES ====== */
+/* Generic section heading / Ogólny tytuł sekcji */
 .section-title {
 	margin: 24px 0 4px;
 	letter-spacing: 0.35em;
 	text-align: center;
 }
+/* Discover variant / Wariant Discover */
 .section-title--discover {
 	color: #bbbaba;
 	/*text-transform: uppercase;*/
@@ -180,6 +195,7 @@ nav,
 }
 
 /* ====== CATEGORIES ====== */
+/* Inline filters list / Pasek filtrów w linii */
 .cats {
 	display: flex;
 	gap: 18px;
@@ -202,6 +218,8 @@ nav,
 }
 
 /* ====== SONG / PLAYER ====== */
+/* Song card constrained to column width
+   Karta utworu w wąskiej kolumnie */
 .song {
 	max-width: 520px;
 	margin: 10px auto;
@@ -213,7 +231,8 @@ nav,
 	margin: 4px auto 8px;
 }
 
-/* Green Audio Player dostosowany do kolumny */
+/* Make Green Audio Player align to column width
+   Dostosowanie Green Audio Player do kolumny */
 .green-audio-player,
 .green-audio-player .controls {
 	width: 63%;
@@ -234,7 +253,8 @@ nav,
 	justify-content: center;
 }
 
-/* Tytuł utworu – bliżej playera */
+/* Bring title visually closer to player
+   Tytuł utworu – bliżej playera */
 .song .song__title {
 	font-size: 15px;
 	line-height: 1.25;
@@ -255,13 +275,15 @@ nav,
 }
 
 /* ====== SUBSCRIBE ====== */
+/* Section wrapper / Kontener sekcji */
 #subscribe {
 	position: relative;
 	max-width: var(--max);
 	margin: clamp(40px, 7vw, 72px) auto 10px;
 }
 
-/* Tytuł – płynna typografia i offset */
+/* Floating section title with fluid offset
+   Tytuł – płynna typografia i offset */
 #subscribe .title {
 	position: absolute;
 	left: 50%;
@@ -273,11 +295,12 @@ nav,
 	color: #fff;
 	margin: 0;
 	white-space: nowrap;
-	z-index: 2;
-	pointer-events: none;
+	z-index: 2;           /* above banner / nad banerem */
+	pointer-events: none; /* non-interactive / nieinteraktywny */
 }
 
-/* Baner z ustalonymi proporcjami (kotwica dla absolutów) */
+/* Banner maintains a stable 16:9 anchor for absolute children
+   Baner z ustalonymi proporcjami (kotwica dla absolutów) */
 #subscribe .banner {
 	position: relative;
 	width: 100%;
@@ -287,7 +310,8 @@ nav,
 	overflow: visible;
 }
 
-/* Mini okładka – stałe położenie względem banera */
+/* Mini cover fixed relative to banner
+   Mini okładka – stałe położenie względem banera */
 #subscribe .artist {
 	position: absolute !important;
 	left: 71% !important;
@@ -297,24 +321,28 @@ nav,
 	/*height: clamp(120, 40%, 320px) !important;*/
 	object-fit: cover;
 	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-	z-index: 2;
+	z-index: 2; /* note: overridden later to 1 in "warstwy" / później niżej z-index=1 */
 }
 #subscribe .copy-main {
 	font-size: clamp(18px, 4.6vw, 35px) !important;
 }
 
+/* Dean gentle offset (variant A)
+   Delikatne przesunięcie napisu „Dean” (wariant A) */
 #subscribe .name-dean {
 	position: relative;
 	left: clamp(-50px, -7vw, -30px);
 	display: inline-block;
 }
 
+/* Main copy block centered right
+   Główny napis centralnie po prawej */
 #subscribe .copy-main {
 	position: absolute;
 	left: 59%;
 	top: 50%;
 	transform: translate(-50%, -50%);
-	z-index: 3;
+	z-index: 3;                 /* top text layer / najwyższa warstwa tekstu */
 	text-align: center;
 	color: #fff;
 	font-size: clamp(39px, 4.6vw, 35px);
@@ -324,7 +352,7 @@ nav,
 	text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
 	white-space: normal;
 	max-width: 26%;
-	word-spacing: 999px;
+	word-spacing: 999px;        /* forces split e.g. Hen / son */
 	letter-spacing: 0.2em;
 }
 
@@ -332,6 +360,8 @@ nav,
 	color: var(--accent);
 }
 
+/* Secondary copy bottom-right
+   Dodatkowy tekst w prawym dolnym rogu */
 #subscribe .copy-sub {
 	position: absolute;
 	right: 15%;
@@ -357,6 +387,8 @@ nav,
 	font-weight: 500;
 }
 
+/* CTA button scales with banner
+   Przycisk CTA skaluje się z banerem */
 #subscribe .cta {
 	position: absolute;
 	left: 19%;
@@ -377,7 +409,10 @@ nav,
 		padding-inline: 0.2% !important;
 	}
 }
-/* --- SUBSCRIBE: warstwy (napisy nad okładką) --- */
+
+/* --- SUBSCRIBE: warstwy (napisy nad okładką) ---
+   Layer stacking: banner (0) < cover (1) < texts+CTA (2)
+   Kolejność warstw: baner (0) < okładka (1) < napisy+CTA (2) */
 #subscribe .banner {
 	position: relative;
 	z-index: 0; /* kotwica */
@@ -392,13 +427,17 @@ nav,
 #subscribe .copy-sub,
 #subscribe .cta {
 	position: absolute; /* już masz, zostaw */
-	z-index: 2; /* napisy i przycisk NAD okładką */
+	z-index: 2;         /* napisy i przycisk NAD okładką */
 }
+
+/* Dean stronger offset (variant B) — keep both for A/B
+   Mocniejsze przesunięcie „Dean” (wariant B) — oba warianty zachowane */
 #subscribe .name-dean {
 	position: relative;
 	left: clamp(-80px, -10vw, -40px);
 	display: inline-block;
 }
+
 /* ====== SECTION LAYOUT ====== */
 #view section {
 	text-align: center;
@@ -414,7 +453,9 @@ nav,
 	letter-spacing: 0.15em;
 }
 
-/* ====== AUDIO PLAYER – czerwone nadpisania ====== */
+/* ====== AUDIO PLAYER – czerwone nadpisania / RED OVERRIDES ====== */
+/* Force accent color on GAP progress & pins
+   Wymuszenie koloru akcentu na pasku postępu i pinach */
 .green-audio-player .controls__slider .controls__progress .pin,
 .green-audio-player .slider .gap-progress .pin,
 .controls__progress .pin,
@@ -449,9 +490,11 @@ div.controls__progress.gap-progress div.pin.progress__pin {
 	background-color: #e53935 !important;
 	background: #e53935 !important;
 }
-/* === SEARCH: węższe pole + pewne zachowanie na wąskich ekranach === */
 
-/* tytuł (bez zmian poza rozmiarem – możesz zostawić swoje) */
+/* === SEARCH: narrower input + robust single-row behavior
+       WYSZUKIWANIE: węższy input + pewne trzymanie jednego rzędu === */
+
+/* Search section title / Tytuł sekcji Search */
 .section-title--search{
   font-size: clamp(16px, 2.2vw, 20px);
   letter-spacing: 0.45em;
@@ -459,16 +502,16 @@ div.controls__progress.gap-progress div.pin.progress__pin {
   margin: 22px 0 14px;
 }
 
-/* formularz */
+/* Search form layout / Układ formularza szukania */
 .search-form{
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 14px;
-  flex-wrap: nowrap;           /* trzymaj w jednym rzędzie */
+  flex-wrap: nowrap;           /* keep one row / trzymaj w jednym rzędzie */
 }
 
-/* label niech się nie łamie */
+/* Label never wraps / Etykieta nie łamie się */
 .search-form label{
   display: flex;
   align-items: center;
@@ -479,10 +522,11 @@ div.controls__progress.gap-progress div.pin.progress__pin {
   min-width: max-content;
 }
 
-/* POLE: WĘŻSZE o ~0.5 cm (po prostu mniejszy max) niż player */
+/* Input slightly narrower than players
+   Input minimalnie węższy od playera (~0.5 cm wizualnie) */
 .search-form input{
-  /* było max ~320–360 — obcinamy */
-  width: clamp(140px, 50vw, 240px); /* <= węższe od playerów */
+  /* was ~320–360 max — trimmed / było ~320–360 — obcięte */
+  width: clamp(140px, 50vw, 240px); /* <= narrower than players / węższe od playerów */
   height: 34px;
   padding: 8px 12px;
   border: 1px solid #444;
@@ -492,7 +536,7 @@ div.controls__progress.gap-progress div.pin.progress__pin {
   font-size: 14px;
 }
 
-/* PRZYCISK */
+/* Primary search button / Główny przycisk */
 .search-form .btn{
   height: 34px;
   padding: 0 14px;
@@ -508,27 +552,29 @@ div.controls__progress.gap-progress div.pin.progress__pin {
 }
 .search-form .btn:hover{ background:#d32f2f; }
 
-/* licznik niżej i biały */
+/* Counter below / Licznik wyników poniżej */
 #counter{
   margin: 20px 0 8px;
   color: #fff;
   letter-spacing: 0.18em;
 }
 
-/* === ULTRA WĄSKIE – np. iPhone SE 375px === */
+/* === ULTRA NARROW (e.g., iPhone SE 375px)
+       BARDZO WĄSKIE — liczymy calc(), by wszystko mieściło się w jednym rzędzie === */
 @media (max-width: 380px){
   .search-form{
     gap: 10px;
     padding: 0 var(--pad);
   }
-  /* policzone: zostaw miejsce na "Name" + przycisk + odstępy,
-     a resztę daj na input, żeby NIC nie spadało niżej */
+  /* calc explanation: width = 100% - label - button - gaps
+     wyjaśnienie: szerokość = 100% - etykieta - przycisk - odstępy */
   .search-form input{
     width: calc(100% - 120px - 90px - 20px);
-    /* 120px ≈ label "Name" z liter-spacing,
-       90px ≈ przycisk, 20px ≈ sumaryczne gapy */
-    max-width: 260px;       /* twardy limit zwężenia */
-    min-width: 140px;       /* ale nie rozpadnij się całkiem */
+    /* 120px ≈ label "Name" with letter-spacing / etykieta "Name"
+       90px ≈ button width / szerokość przycisku
+       20px ≈ total gaps / suma odstępów */
+    max-width: 260px;       /* hard cap / twardy limit zwężenia */
+    min-width: 140px;       /* don't collapse / nie rozpadnij się */
     height: 32px;
   }
   .search-form .btn{
@@ -539,7 +585,8 @@ div.controls__progress.gap-progress div.pin.progress__pin {
   }
 }
 
-/* dodatkowa ochrona poniżej 340px (bardzo rzadkie) */
+/* Extra guard for sub-340px widths
+   Dodatkowa asekuracja poniżej 340px */
 @media (max-width: 340px){
   .search-form input{
     width: calc(100% - 110px - 82px - 16px);
