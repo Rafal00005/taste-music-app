@@ -1,4 +1,10 @@
 # TASTE — Music SPA (Vite + JSON-Server)
+## How to run (dev)
+npm install
+npm run start
+# App: http://localhost:5173
+# API: http://localhost:3131 (GET /songs)
+
 
 Jednostronicowa aplikacja muzyczna z trzema widokami: **Home**, **Search**, **Discover**.  
 Dane ładowane są z `JSON-Server` (`app.json`), a odtwarzanie obsługuje **GreenAudioPlayer** ze stylizacją w czerwieni.  
